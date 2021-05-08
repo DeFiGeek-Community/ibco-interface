@@ -2,11 +2,41 @@ import { Button, Form, Input } from 'antd';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import useInterval from '../../../hooks/useInterval';
-import { formatPrice } from '../../../utils/prices';
+import { formatPrice, getTokenName } from '../../../utils/prices';
 import Footer from '../../Footer';
 import { Container, Main, H1, Description, Grid } from '../../Layout';
 import CalendarInCircle from '../countdown-calendar/CalendarInCircle';
 import StatisticsInCircle from '../statistics/StatisticsInCircle';
+
+// note: 開発中に用いるデータ。contractと繋げたら削除すること。
+export const mockData = {
+  eventSummary: {
+    title: '[2021年4月の寄付イベント名]',
+    organizer: 'Presented by DeFiGeek Community JAPAN',
+    description: '説明説明説明',
+    unixStartDate: Math.floor(new Date(2021, 2, 10).getTime() / 1000), // 開始日時。unixTime形式
+    unixEndDate: Math.floor(new Date(2021, 3, 30).getTime() / 1000), // 終了日時。unixTime形式
+    totalProvidedToken: 3600, // 配布トークン数
+    targetFigure: 10000, // 目標額
+    donatedTokenSymbol: 'ETH' as const, // 寄付するトークンのシンボル
+    providedTokenSymbol: 'TXJP' as const, // 配布するトークンのシンボル
+    fiatSymbol: 'JPY' as const,
+    referenceList: {
+      forum: 'https://gov.defigeek.xyz/',
+      discord: 'https://discord.gg/FQYXqVBEnh',
+      github: 'https://github.com/DeFiGeek-Community',
+    },
+  },
+  totalDonations: 1070.1234567891, // 全体の寄付総額
+  myTotalDonations: 1.8, // 当アカウントの寄付総額
+};
+const donatedTokenSymbolLowerCase = mockData.eventSummary.donatedTokenSymbol.toLowerCase() as 'eth';
+const providedTokenSymbolLowerCase = mockData.eventSummary.donatedTokenSymbol.toLowerCase() as 'txjp';
+const fiatSymbolLowerCase = mockData.eventSummary.fiatSymbol.toLowerCase() as 'jpy';
+const donatedTokenName = getTokenName(
+  mockData.eventSummary.donatedTokenSymbol.toLowerCase() as 'eth'
+);
+const oracleUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${donatedTokenName}&vs_currencies=${fiatSymbolLowerCase}`;
 
 export default function BulksaleV1() {
   const [number, setNumber] = useState(0);
