@@ -1,12 +1,13 @@
 import { Button, Form, Input } from 'antd';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import useInterval from '../../../hooks/useInterval';
-import { formatPrice, getTokenName } from '../../../utils/prices';
-import Footer from '../../Footer';
-import { Container, Main, H1, Description, Grid } from '../../Layout';
-import CalendarInCircle from '../countdown-calendar/CalendarInCircle';
-import StatisticsInCircle from '../statistics/StatisticsInCircle';
+import useInterval from '../../../../hooks/useInterval';
+import { getTokenName } from '../../../../utils/prices';
+import Footer from '../../../Footer';
+import { Container, Main, H1, Description, Grid } from '../../../Layout';
+import CalendarInCircle from '../../countdown-calendar/CalendarInCircle';
+import StatisticsInCircle from '../../statistics/StatisticsInCircle';
+import PersonalStatistics from './PersonalStatistics';
 
 // note: 開発中に用いるデータ。contractと繋げたら削除すること。
 export const mockData = {
@@ -16,11 +17,12 @@ export const mockData = {
     description: '説明説明説明',
     unixStartDate: Math.floor(new Date(2021, 2, 10).getTime() / 1000), // 開始日時。unixTime形式
     unixEndDate: Math.floor(new Date(2021, 3, 30).getTime() / 1000), // 終了日時。unixTime形式
-    totalProvidedToken: 3600, // 配布トークン数
+    totalProvidedTokens: 3600, // 配布トークン数
     targetFigure: 10000, // 目標額
-    donatedTokenSymbol: 'ETH' as const, // 寄付するトークンのシンボル
-    providedTokenSymbol: 'TXJP' as const, // 配布するトークンのシンボル
-    fiatSymbol: 'JPY' as const,
+    minTargetFigure: 100, // 最小到達額
+    donatedTokenSymbol: 'eth' as const, // 寄付するトークンのシンボル
+    providedTokenSymbol: 'txjp' as const, // 配布するトークンのシンボル
+    fiatSymbol: 'jpy' as const,
     referenceList: {
       forum: 'https://gov.defigeek.xyz/',
       discord: 'https://discord.gg/FQYXqVBEnh',
@@ -30,13 +32,8 @@ export const mockData = {
   totalDonations: 1070.1234567891, // 全体の寄付総額
   myTotalDonations: 1.8, // 当アカウントの寄付総額
 };
-const donatedTokenSymbolLowerCase = mockData.eventSummary.donatedTokenSymbol.toLowerCase() as 'eth';
-const providedTokenSymbolLowerCase = mockData.eventSummary.donatedTokenSymbol.toLowerCase() as 'txjp';
-const fiatSymbolLowerCase = mockData.eventSummary.fiatSymbol.toLowerCase() as 'jpy';
-const donatedTokenName = getTokenName(
-  mockData.eventSummary.donatedTokenSymbol.toLowerCase() as 'eth'
-);
-const oracleUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${donatedTokenName}&vs_currencies=${fiatSymbolLowerCase}`;
+const donatedTokenName = getTokenName(mockData.eventSummary.donatedTokenSymbol);
+const oracleUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${donatedTokenName}&vs_currencies=${mockData.eventSummary.fiatSymbol}`;
 
 export default function BulksaleV1() {
   const [number, setNumber] = useState(0);
@@ -64,31 +61,13 @@ export default function BulksaleV1() {
     return Promise.reject('Price must be greater than zero!');
   };
 
-  const getExpectedTxjpAmount = (
-    myTotalDonations: number,
-    inputtingValue: number
-  ) => {
-    let donations = 0;
-    if (!Number.isNaN(myTotalDonations)) {
-      donations += myTotalDonations;
-    }
-    if (!Number.isNaN(inputtingValue)) {
-      donations += inputtingValue;
-    }
-
-    return (
-      (donations / mockData.totalDonations) *
-      mockData.eventSummary.totalProvidedToken
-    );
-  };
-
   useInterval(() => {
     // coin geckoのデータの変更間隔は60秒毎っぽい
     fetch(oracleUrl)
       .then((response) => response.json())
       .then((body) => {
         console.log('coin gecko', body);
-        setFiatRate(body[donatedTokenName][fiatSymbolLowerCase]);
+        setFiatRate(body[donatedTokenName][mockData.eventSummary.fiatSymbol]);
       });
   }, 30000);
 
@@ -114,8 +93,9 @@ export default function BulksaleV1() {
           <StatisticsInCircle
             totalDonations={mockData.totalDonations}
             targetFigure={mockData.eventSummary.targetFigure}
-            donatedTokenSymbol={donatedTokenSymbolLowerCase}
-            fiatSymbol={fiatSymbolLowerCase}
+            minTargetFigure={mockData.eventSummary.minTargetFigure}
+            donatedTokenSymbol={mockData.eventSummary.donatedTokenSymbol}
+            fiatSymbol={mockData.eventSummary.fiatSymbol}
             fiatRate={fiatRate}
           ></StatisticsInCircle>
 
@@ -139,7 +119,9 @@ export default function BulksaleV1() {
                 style={{ width: '300px', textAlign: 'right' }}
               />
             </Form.Item>
-            <Form.Item>{mockData.eventSummary.donatedTokenSymbol}</Form.Item>
+            <Form.Item>
+              {mockData.eventSummary.donatedTokenSymbol.toUpperCase()}
+            </Form.Item>
             <Form.Item>
               <Button type="primary" shape="round" htmlType="submit">
                 寄付する
@@ -148,33 +130,14 @@ export default function BulksaleV1() {
           </Form>
         </Grid>
 
-        <div style={{ marginTop: '40px', fontSize: '2em' }}>
-          <p>
-            {mockData.eventSummary.providedTokenSymbol}獲得予定数:{' '}
-            <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {formatPrice(
-                getExpectedTxjpAmount(mockData.myTotalDonations, number),
-                providedTokenSymbolLowerCase
-              )}{' '}
-              TXJP
-            </span>
-          </p>
-          <p>
-            現寄付
-            <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {formatPrice(
-                mockData.myTotalDonations,
-                donatedTokenSymbolLowerCase
-              )}{' '}
-              {mockData.eventSummary.donatedTokenSymbol}
-            </span>{' '}
-            + 新寄付
-            <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {formatPrice(number, donatedTokenSymbolLowerCase)}{' '}
-              {mockData.eventSummary.donatedTokenSymbol}
-            </span>
-          </p>
-        </div>
+        <PersonalStatistics
+          inputValue={number}
+          myTotalDonations={mockData.myTotalDonations}
+          totalProvidedToken={mockData.eventSummary.totalProvidedTokens}
+          totalDonations={mockData.totalDonations}
+          providedTokenSymbol={mockData.eventSummary.providedTokenSymbol}
+          donatedTokenSymbol={mockData.eventSummary.donatedTokenSymbol}
+        ></PersonalStatistics>
       </Main>
 
       <Footer referenceList={mockData.eventSummary.referenceList}></Footer>
