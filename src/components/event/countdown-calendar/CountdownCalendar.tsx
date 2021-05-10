@@ -1,7 +1,8 @@
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import useInterval from '../../../hooks/useInterval';
+import { WalletContext } from '../../contexts';
 
 type Props = {
   unixEndDate: number;
@@ -17,8 +18,13 @@ const initialCountdown = {
 
 export default function CountdownCalendar({ unixEndDate }: Props) {
   const [countdown, setCountdown] = useState(initialCountdown);
+  const { isConnected, isLoading } = useContext(WalletContext);
 
   useInterval(() => {
+    if (!isConnected || !unixEndDate) {
+      setCountdown({ days: '?', hours: '?', mins: '?', secs: '?' });
+      return;
+    }
     const now = Math.floor(Date.now() / 1000);
     const newCountdown = { ...getCountdown(unixEndDate - now) };
     setCountdown(newCountdown);
@@ -26,7 +32,9 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
 
   return (
     <div>
-      <p> {format(unixEndDate * 1000, 'yyyy年MM月dd日まで')}</p>
+      {isConnected && !isLoading ? (
+        <p> {format(unixEndDate * 1000, 'yyyy年MM月dd日まで')}</p>
+      ) : null}
       <CountdownPanel>
         <div className="countdown-value">{countdown.days}</div>
         <div className="countdown-unit">DAYS</div>
@@ -43,7 +51,7 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
         <div className="countdown-value">{countdown.secs}</div>
         <div className="countdown-unit">SECS</div>
       </CountdownPanel>
-      {unixEndDate < Date.now() && (
+      {isConnected && unixEndDate < Date.now() && (
         <div
           style={{
             textAlign: 'center',

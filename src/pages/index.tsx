@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { Container, Main, H1, Description } from '../components/Layout';
-import { mockData } from '../components/event/templates/BulksaleV1';
+import { mockData } from '../components/event/templates/bulksale-v1/BulksaleV1';
 
 export default function Index() {
   return (
