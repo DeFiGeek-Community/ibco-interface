@@ -1,8 +1,8 @@
-import { BigNumber } from 'bignumber.js';
+import Big from 'big.js';
 
-type BigNumberValueType = BigNumber | number;
+type BigNumberValueType = Big | number;
 
-export function add(v1: BigNumberValueType, v2: BigNumberValueType): BigNumber {
+export function add(v1: BigNumberValueType, v2: BigNumberValueType): Big {
   const a = getBigNumber(v1);
   const b = getBigNumber(v2);
   return a.plus(b);
@@ -14,10 +14,7 @@ export function addToNum(
   return add(v1, v2).toNumber();
 }
 
-export function subtract(
-  v1: BigNumberValueType,
-  v2: BigNumberValueType
-): BigNumber {
+export function subtract(v1: BigNumberValueType, v2: BigNumberValueType): Big {
   const a = getBigNumber(v1);
   const b = getBigNumber(v2);
   return a.minus(b);
@@ -29,13 +26,10 @@ export function subtractToNum(
   return subtract(v1, v2).toNumber();
 }
 
-export function multiply(
-  v1: BigNumberValueType,
-  v2: BigNumberValueType
-): BigNumber {
+export function multiply(v1: BigNumberValueType, v2: BigNumberValueType): Big {
   const a = getBigNumber(v1);
   const b = getBigNumber(v2);
-  return a.multipliedBy(b);
+  return a.times(b);
 }
 export function multiplyToNum(
   v1: BigNumberValueType,
@@ -44,13 +38,10 @@ export function multiplyToNum(
   return multiply(v1, v2).toNumber();
 }
 
-export function divide(
-  v1: BigNumberValueType,
-  v2: BigNumberValueType
-): BigNumber {
+export function divide(v1: BigNumberValueType, v2: BigNumberValueType): Big {
   const a = getBigNumber(v1);
   const b = getBigNumber(v2);
-  return a.dividedBy(b);
+  return a.div(b);
 }
 export function divideToNum(
   v1: BigNumberValueType,
@@ -59,9 +50,9 @@ export function divideToNum(
   return divide(v1, v2).toNumber();
 }
 
-export function getBigNumber(val: BigNumberValueType): BigNumber {
-  if (val instanceof BigNumber) {
+export function getBigNumber(val: BigNumberValueType): Big {
+  if (val instanceof Big) {
     return val;
   }
-  return new BigNumber(val);
+  return new Big(val);
 }
