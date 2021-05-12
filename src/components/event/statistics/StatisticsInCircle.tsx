@@ -27,13 +27,13 @@ export default function StatisticsInCircle({
 }: Props) {
   const { isConnected, isLoading } = useContext(WalletContext);
 
-  const getTargetPercetage = () => {
+  function getTargetPercetage() {
     return (totalDonations / targetFigure) * 100;
-  };
+  }
 
-  const getFiatConversionAmount = (token: number) => {
+  function getFiatConversionAmount(token: number) {
     return token * fiatRate;
-  };
+  }
 
   return (
     <div style={{ position: 'relative', minWidth: '500px' }}>

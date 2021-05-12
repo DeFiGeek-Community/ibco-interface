@@ -28,16 +28,16 @@ export default function BulksaleV1(props: Props) {
     setNumber(newNumber);
   };
 
-  const onFinish = (values: any) => {
+  function onFinish(values: any) {
     console.log('Received values from form: ', values);
-  };
+  }
 
-  const checkPrice = (_: any, value: number) => {
+  function checkPrice(_: any, value: number) {
     if (number > 0) {
       return Promise.resolve(value);
     }
     return Promise.reject('Price must be greater than zero!');
-  };
+  }
 
   useInterval(() => {
     const donatedTokenName = getTokenName(
