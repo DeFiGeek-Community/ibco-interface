@@ -70,16 +70,18 @@ export default function StatisticsInCircle({
                   )
                 : '????'}
             </div>
-            <p
-              style={{
-                textAlign: 'center',
-                fontSize: '1rem',
-              }}
-            >
-              最小到達額 {isConnected ? minTargetFigure : '????'}
-              {donatedTokenSymbol.toUpperCase()}{' '}
-              {totalDonations >= minTargetFigure ? 'を達成しました🎉' : ''}
-            </p>
+            {isConnected && !!minTargetFigure ? (
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '1rem',
+                }}
+              >
+                最小到達額 {minTargetFigure}
+                {donatedTokenSymbol.toUpperCase()}{' '}
+                {totalDonations >= minTargetFigure ? 'を達成しました🎉' : ''}
+              </p>
+            ) : null}
           </>
         ) : (
           <Skeleton active paragraph={{ rows: 2 }}></Skeleton>

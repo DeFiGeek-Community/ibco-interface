@@ -1,3 +1,4 @@
+import { COINGECKO_URL } from '../constants/api';
 import { multiplyToNum } from './bignumber';
 
 export type CryptoCurrency = 'eth' | 'txjp';
@@ -31,7 +32,18 @@ export function getFialSymbol(currency: FiatCurrency) {
   return '';
 }
 
-// coin geckoのレスポンス
+/**
+ * CoinGecko
+ */
+
+export function getOracleUrlForFiatPriceOfToken(
+  tokenName: string,
+  fiatSymbol: FiatCurrency
+) {
+  return `${COINGECKO_URL}?ids=${tokenName}&vs_currencies=${fiatSymbol}`;
+}
+
+// coingeckoのレスポンス
 // https://www.coingecko.com/api/documentations/v3#/coins/get_coins_list
 export function getTokenName(currency: CryptoCurrency) {
   if (currency === 'eth') {
