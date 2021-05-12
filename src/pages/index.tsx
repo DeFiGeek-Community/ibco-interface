@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { Container, Main, H1, Description } from '../components/Layout';
-import { mockData } from '../components/event/templates/bulksale-v1/BulksaleV1';
+import { mockData } from './event/id';
 
 export default function Index() {
   return (
@@ -18,7 +18,9 @@ export default function Index() {
 
         <Description>event list</Description>
 
-        <Link to="/event/1">{mockData.eventSummary.title}</Link>
+        <Link to={`/event/${mockData.eventSummary.contractAddress}`}>
+          {mockData.eventSummary.title}
+        </Link>
       </Main>
 
       <Footer></Footer>

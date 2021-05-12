@@ -1,41 +1,19 @@
 import { Button, Form, Input } from 'antd';
 import { useState } from 'react';
-import { Helmet } from 'react-helmet';
 import useInterval from '../../../../hooks/useInterval';
-import { getTokenName } from '../../../../utils/prices';
-import Footer from '../../../Footer';
-import { Container, Main, H1, Description, Grid } from '../../../Layout';
+import { mockData } from '../../../../pages/event/id';
+import {
+  getOracleUrlForFiatPriceOfToken,
+  getTokenName,
+} from '../../../../utils/prices';
+import { H1, Description, Grid } from '../../../Layout';
 import CalendarInCircle from '../../countdown-calendar/CalendarInCircle';
 import StatisticsInCircle from '../../statistics/StatisticsInCircle';
 import PersonalStatistics from './PersonalStatistics';
 
-// note: 開発中に用いるデータ。contractと繋げたら削除すること。
-export const mockData = {
-  eventSummary: {
-    title: '[2021年4月の寄付イベント名]',
-    organizer: 'Presented by DeFiGeek Community JAPAN',
-    description: '説明説明説明',
-    unixStartDate: Math.floor(new Date(2021, 2, 10).getTime() / 1000), // 開始日時。unixTime形式
-    unixEndDate: Math.floor(new Date(2021, 3, 30).getTime() / 1000), // 終了日時。unixTime形式
-    totalProvidedTokens: 3600, // 配布トークン数
-    targetFigure: 10000, // 目標額
-    minTargetFigure: 100, // 最小到達額
-    donatedTokenSymbol: 'eth' as const, // 寄付するトークンのシンボル
-    providedTokenSymbol: 'txjp' as const, // 配布するトークンのシンボル
-    fiatSymbol: 'jpy' as const,
-    referenceList: {
-      forum: 'https://gov.defigeek.xyz/',
-      discord: 'https://discord.gg/FQYXqVBEnh',
-      github: 'https://github.com/DeFiGeek-Community',
-    },
-  },
-  totalDonations: 1070.1234567891, // 全体の寄付総額
-  myTotalDonations: 1.8, // 当アカウントの寄付総額
-};
-const donatedTokenName = getTokenName(mockData.eventSummary.donatedTokenSymbol);
-const oracleUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${donatedTokenName}&vs_currencies=${mockData.eventSummary.fiatSymbol}`;
+type Props = { data: typeof mockData };
 
-export default function BulksaleV1() {
+export default function BulksaleV1(props: Props) {
   const [number, setNumber] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
   // const { id } = useParams<{ id: string }>();
@@ -62,85 +40,82 @@ export default function BulksaleV1() {
   };
 
   useInterval(() => {
+    const donatedTokenName = getTokenName(
+      props.data.eventSummary.donatedTokenSymbol
+    );
+    const oracleUrl = getOracleUrlForFiatPriceOfToken(
+      donatedTokenName,
+      props.data.eventSummary.fiatSymbol
+    );
     // coin geckoのデータの変更間隔は60秒毎っぽい
     fetch(oracleUrl)
       .then((response) => response.json())
       .then((body) => {
         console.log('coin gecko', body);
-        setFiatRate(body[donatedTokenName][mockData.eventSummary.fiatSymbol]);
+        setFiatRate(body[donatedTokenName][props.data.eventSummary.fiatSymbol]);
       });
   }, 30000);
 
   return (
-    <Container>
-      <Helmet>
-        <title>{mockData.eventSummary.title}</title>
-        {/* ロゴができたら差し替える */}
-        <link rel="icon" href="/favicon.ico" />
-      </Helmet>
+    <>
+      <H1>{props.data.eventSummary.title}</H1>
 
-      <Main>
-        <H1>{mockData.eventSummary.title}</H1>
+      <Description>
+        {props.data.eventSummary.organizer}{' '}
+        {/* <code className={styles.code}></code> */}
+      </Description>
 
-        <Description>
-          {mockData.eventSummary.organizer}{' '}
-          {/* <code className={styles.code}></code> */}
-        </Description>
+      <Description>{props.data.eventSummary.description} </Description>
 
-        <Description>{mockData.eventSummary.description} </Description>
+      <Grid>
+        <StatisticsInCircle
+          totalDonations={props.data.totalDonations}
+          targetFigure={props.data.eventSummary.targetFigure}
+          minTargetFigure={props.data.eventSummary.minTargetFigure}
+          donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
+          fiatSymbol={props.data.eventSummary.fiatSymbol}
+          fiatRate={fiatRate}
+        ></StatisticsInCircle>
 
-        <Grid>
-          <StatisticsInCircle
-            totalDonations={mockData.totalDonations}
-            targetFigure={mockData.eventSummary.targetFigure}
-            minTargetFigure={mockData.eventSummary.minTargetFigure}
-            donatedTokenSymbol={mockData.eventSummary.donatedTokenSymbol}
-            fiatSymbol={mockData.eventSummary.fiatSymbol}
-            fiatRate={fiatRate}
-          ></StatisticsInCircle>
+        <CalendarInCircle
+          unixStartDate={props.data.eventSummary.unixStartDate}
+          unixEndDate={props.data.eventSummary.unixEndDate}
+        ></CalendarInCircle>
+      </Grid>
 
-          <CalendarInCircle
-            unixStartDate={mockData.eventSummary.unixStartDate}
-            unixEndDate={mockData.eventSummary.unixEndDate}
-          ></CalendarInCircle>
-        </Grid>
+      <Grid>
+        <Form
+          name="fundraiser_form_controls"
+          layout="inline"
+          onFinish={onFinish}
+        >
+          <Form.Item name="price" rules={[{ validator: checkPrice }]}>
+            <Input
+              type="text"
+              value={number}
+              onChange={onNumberChange}
+              style={{ width: '300px', textAlign: 'right' }}
+            />
+          </Form.Item>
+          <Form.Item>
+            {props.data.eventSummary.donatedTokenSymbol.toUpperCase()}
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" shape="round" htmlType="submit">
+              寄付する
+            </Button>
+          </Form.Item>
+        </Form>
+      </Grid>
 
-        <Grid>
-          <Form
-            name="fundraiser_form_controls"
-            layout="inline"
-            onFinish={onFinish}
-          >
-            <Form.Item name="price" rules={[{ validator: checkPrice }]}>
-              <Input
-                type="text"
-                value={number}
-                onChange={onNumberChange}
-                style={{ width: '300px', textAlign: 'right' }}
-              />
-            </Form.Item>
-            <Form.Item>
-              {mockData.eventSummary.donatedTokenSymbol.toUpperCase()}
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" shape="round" htmlType="submit">
-                寄付する
-              </Button>
-            </Form.Item>
-          </Form>
-        </Grid>
-
-        <PersonalStatistics
-          inputValue={number}
-          myTotalDonations={mockData.myTotalDonations}
-          totalProvidedToken={mockData.eventSummary.totalProvidedTokens}
-          totalDonations={mockData.totalDonations}
-          providedTokenSymbol={mockData.eventSummary.providedTokenSymbol}
-          donatedTokenSymbol={mockData.eventSummary.donatedTokenSymbol}
-        ></PersonalStatistics>
-      </Main>
-
-      <Footer referenceList={mockData.eventSummary.referenceList}></Footer>
-    </Container>
+      <PersonalStatistics
+        inputValue={number}
+        myTotalDonations={props.data.myTotalDonations}
+        totalProvidedToken={props.data.eventSummary.totalProvidedTokens}
+        totalDonations={props.data.totalDonations}
+        providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
+        donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
+      ></PersonalStatistics>
+    </>
   );
 }
