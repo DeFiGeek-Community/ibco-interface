@@ -1,12 +1,14 @@
 import React from 'react';
-import { HashRouter, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 // import logo from './logo.svg';
+import Web3ReactManager from './components/Web3ReactManager';
+import EventEditorCreate from './pages/event-editor/create';
 import EventDetail from './pages/event/id';
 import Index from './pages/index';
 
 function App() {
   return (
-    <HashRouter>
+    <Web3ReactManager>
       <Switch>
         <Route exact path="/">
           <Index />
@@ -14,8 +16,11 @@ function App() {
         <Route exact path="/event/:id">
           <EventDetail />
         </Route>
+        <Route exact path="/event-editor/create">
+          <EventEditorCreate />
+        </Route>
       </Switch>
-    </HashRouter>
+    </Web3ReactManager>
   );
 }
 

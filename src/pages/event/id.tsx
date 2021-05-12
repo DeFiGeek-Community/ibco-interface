@@ -6,7 +6,7 @@ import Footer from '../../components/Footer';
 import { Container, Main } from '../../components/Layout';
 import { WalletContext } from '../../components/contexts';
 import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1';
-import { TemplatesMap } from '../../constants/templates';
+import { TemplatesMap } from '../../constants/contracts';
 
 // note: 初回イベント用の埋め込みマスターデータ
 export const masterDataForFirstEvent = {
@@ -42,7 +42,7 @@ export const mockData = {
 export default function EventDetail() {
   const [eventAddress, setEventAddress] = useState('');
   const [templateAddress, setTemplateAddress] = useState('');
-  const [data, setData] = useState({} as any);
+  const [data, setData] = useState<any>({}); // TODO: 型
   const location = useLocation();
 
   // for Wallet Context

@@ -22,10 +22,10 @@ const PersonalStatistics = ({
 }: Props) => {
   const { isConnected, isLoading } = useContext(WalletContext);
 
-  const getExpectedTxjpAmount = (
+  function getExpectedTxjpAmount(
     myTotalDonations: number,
     inputtingValue: number
-  ) => {
+  ) {
     let donations = 0;
     if (!Number.isNaN(myTotalDonations)) {
       donations += myTotalDonations;
@@ -35,7 +35,7 @@ const PersonalStatistics = ({
     }
 
     return (donations / totalDonations) * totalProvidedToken;
-  };
+  }
 
   return (
     <div style={{ marginTop: '40px', fontSize: '2em' }}>

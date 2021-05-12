@@ -10,12 +10,12 @@ export default function CalendarInCircle({
   unixStartDate,
   unixEndDate,
 }: Props) {
-  const getRestTermPercetage = () => {
+  function getRestTermPercetage() {
     const now = Date.now() / 1000;
     const duration = unixEndDate - unixStartDate;
     const rest = now - unixStartDate;
     return (rest / duration) * 100;
-  };
+  }
 
   return (
     <div

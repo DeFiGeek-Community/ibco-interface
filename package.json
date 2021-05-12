@@ -14,10 +14,14 @@
     "ci:format": "yarn format && yarn diff-check"
   },
   "dependencies": {
+    "@ethersproject/experimental": "^5.1.2",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/injected-connector": "^6.0.7",
     "antd": "^4.13.0",
     "big.js": "^6.1.1",
     "date-fns": "^2.19.0",
     "react": "^17.0.1",
+    "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",

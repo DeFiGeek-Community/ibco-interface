@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
@@ -15,6 +16,12 @@ export default function Index() {
 
       <Main>
         <H1>The tool to build easily a Bulk Auction</H1>
+
+        <div style={{ textAlign: 'center', width: '100%', margin: '24px' }}>
+          <Link to={`/event-editor/create`}>
+            <Button type="primary">create new event</Button>
+          </Link>
+        </div>
 
         <Description>event list</Description>
 
