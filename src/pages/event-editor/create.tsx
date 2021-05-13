@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import FactoryAbi from '../../abis/Factory.json';
+import BulksaleV1Json from '../../abis/BulksaleV1.json';
+import FactoryJson from '../../abis/Factory.json';
 import { Container, Main } from '../../components/Layout';
+import { H1 } from '../../components/Layout';
 import { FACTORY_CONTRACT_ADDRESS } from '../../constants/contracts';
 import {
   calculateGasMargin,
@@ -16,11 +18,16 @@ import { getAbiArgs } from '../../utils/web3';
 
 export default function EventEditorCreate() {
   const [data, setData] = useState({} as any);
-  const { library, account } = useActiveWeb3React();
+  const { library, account, active } = useActiveWeb3React();
   const location = useLocation();
 
-  function onFinish(values: any) {
-    console.log('Received values from form: ', values, library, account);
+  async function onFinish(values: any) {
+    console.log(
+      'Received values from form: ',
+      values,
+      library?.network,
+      account
+    );
     if (!library || !account)
       return message.error('ウォレットを接続してください');
 
@@ -38,9 +45,11 @@ export default function EventEditorCreate() {
 
     const contract = getContract(
       FACTORY_CONTRACT_ADDRESS,
-      FactoryAbi.abi,
+      FactoryJson.abi,
       library
     );
+    const signer = contract.connect(library.getSigner());
+
     const argsForClone = getAbiArgs(templateName, {
       token: tokenAddress,
       start: Number(startDate),
@@ -61,23 +70,48 @@ export default function EventEditorCreate() {
 
     console.log('コントラクト', contract, args);
 
-    return contract.estimateGas['deploy'](...args, { gasLimit: 250000 })
-      .then((estimatedGasLimit) => {
-        console.log('ガス', estimatedGasLimit);
-        // return contract
-        //   .deploy(...args, {
-        //     value: null,
-        //     gasLimit: calculateGasMargin(estimatedGasLimit),
-        //   })
-        //   .then((response: TransactionResponse) => {
-        //     // addTransaction(response, {
-        //     //   summary: `Claimed ${unclaimedAmount?.toSignificant(4)} UNI`,
-        //     //   claim: { recipient: account },
-        //     // });
-        //     return response.hash;
-        //   });
-      })
-      .catch((error) => console.error(error));
+    try {
+      const estimatedGasLimit = await contract.estimateGas['deploy'](
+        ...args,
+        {}
+      );
+      console.log('ガス', estimatedGasLimit);
+
+      signer
+        .deploy(...args)
+        .then((res: any) => console.log('deploy結果', res))
+        .catch((error: any) => console.error('deploy結果', error));
+    } catch (error) {
+      console.error(error);
+    }
+
+    // contract.estimateGas['deploy'](...args, {})
+    //   .then((estimatedGasLimit) => {
+    //     console.log('ガス', estimatedGasLimit);
+    //     return signer.deploy(...args).then((response: TransactionResponse) => {
+    //       // addTransaction(response, {
+    //       //   summary: `Claimed ${unclaimedAmount?.toSignificant(4)} UNI`,
+    //       //   claim: { recipient: account },
+    //       // });
+    //       return response.hash;
+    //     });
+    //   })
+    //   .catch((error) => console.error(error));
+  }
+
+  function onClickCheckTemplate(values: any) {
+    console.log('check template', values);
+    if (!library || !account)
+      return message.error('ウォレットを接続してください');
+
+    const contract = getContract(
+      FACTORY_CONTRACT_ADDRESS,
+      FactoryJson.abi,
+      library
+    );
+    contract
+      .templates(values)
+      .then((address: any) => console.log('template', address));
   }
 
   return (
@@ -94,6 +128,8 @@ export default function EventEditorCreate() {
       </div>
 
       <Main>
+        <H1>イベント編集</H1>
+
         <Form
           name="fundraiser_form_controls"
           labelCol={{ span: 10 }}
@@ -175,6 +211,27 @@ export default function EventEditorCreate() {
           <Form.Item>
             <Button type="primary" shape="round" htmlType="submit">
               イベントを作る
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <Form
+          name="fundraiser_form_controls"
+          labelCol={{ span: 10 }}
+          wrapperCol={{ span: 16 }}
+          onFinish={onClickCheckTemplate}
+        >
+          <Form.Item
+            label="TemplateName"
+            name="templateName"
+            rules={[{ required: true, message: 'Please input!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" shape="round" htmlType="submit">
+              テンプレートがセットされている確認する
             </Button>
           </Form.Item>
         </Form>

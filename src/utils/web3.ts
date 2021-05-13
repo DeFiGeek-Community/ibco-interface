@@ -5,7 +5,7 @@ import { BulksaleV1Args } from '../constants/contracts';
 export function getAbiArgs(templateName: string, args: BulksaleV1Args) {
   let types;
   let values;
-  if (templateName == 'BulksaleV1') {
+  if (templateName == 'BulksaleV1.sol') {
     types = [
       'address',
       'uint',
