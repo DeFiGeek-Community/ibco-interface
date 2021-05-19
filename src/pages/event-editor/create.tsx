@@ -1,3 +1,4 @@
+import { AddressZero } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { Button, Form, Input, Row, Col, message, InputNumber } from 'antd';
 import { useEffect, useState } from 'react';
@@ -71,18 +72,29 @@ export default function EventEditorCreate() {
     console.log('コントラクト', contract, args);
 
     try {
-      const estimatedGasLimit = await contract.estimateGas['deploy'](
-        ...args,
-        {}
-      );
-      console.log('ガス', estimatedGasLimit);
+      // const estimatedGasLimit = await contract.estimateGas['deploy'](
+      //   ...args,
+      //   {}
+      // );
+      // console.log('ガス', estimatedGasLimit);
 
       signer
         .deploy(...args)
-        .then((res: any) => console.log('deploy結果', res))
-        .catch((error: any) => console.error('deploy結果', error));
+        .then((res: any) => {
+          console.log('deploy結果', res);
+          message.info(`作成しました！　${res}`);
+        })
+        .catch((error: any) => {
+          console.error('deploy結果', error);
+          message.warning(
+            `作成できませんでした。。　${error.message.substring(0, 20)}...`
+          );
+        });
     } catch (error) {
       console.error(error);
+      message.error(
+        `エラーが発生しました。。　${error.message.substring(0, 20)}...`
+      );
     }
 
     // contract.estimateGas['deploy'](...args, {})
@@ -109,9 +121,15 @@ export default function EventEditorCreate() {
       FactoryJson.abi,
       library
     );
-    contract
-      .templates(values)
-      .then((address: any) => console.log('template', address));
+
+    contract.templates(values.templateName).then((address: any) => {
+      console.log('template', address);
+      if (address === AddressZero) {
+        message.warning(`templateは未登録です。${address}`);
+      } else {
+        message.info(`templateは登録されています。${address}`);
+      }
+    });
   }
 
   return (

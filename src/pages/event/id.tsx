@@ -21,7 +21,7 @@ export const masterDataForFirstEvent = {
     discord: 'https://discord.gg/FQYXqVBEnh',
     github: 'https://github.com/DeFiGeek-Community',
   },
-  contractAddress: '1',
+  contractAddress: '0x785e980BEC067096de1538d3875bcFe537dcc3f2',
   templateAddress: Object.keys(TemplatesMap)[0],
   logoUrl: '/favicon.ico',
 };
@@ -83,9 +83,13 @@ export default function EventDetail() {
     setData(mockData);
   }, []);
 
+  function onClickConnectWallet() {
+    console.log('ウォレットコネクト');
+  }
+
   const selectTemplate = () => {
     switch (TemplatesMap[templateAddress]) {
-      case 'BulksaleV1':
+      case 'BulksaleV1.0.sol':
         return <BulksaleV1 data={data}></BulksaleV1>;
       default:
         return (
@@ -114,7 +118,11 @@ export default function EventDetail() {
         </Helmet>
 
         <div style={{ textAlign: 'right', width: '100%' }}>
-          <Button type="primary" style={{ margin: '24px 24px 0' }}>
+          <Button
+            type="primary"
+            style={{ margin: '24px 24px 0' }}
+            onClick={onClickConnectWallet}
+          >
             Connect to a wallet
           </Button>
         </div>
