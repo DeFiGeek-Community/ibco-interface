@@ -9,7 +9,7 @@ import { getLibrary } from './hooks/useWeb3';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NETWORK_CONTEXT_NAME);
 
-const { ethereum } = window as any;
+const { ethereum } = window;
 if (!!ethereum) {
   ethereum.autoRefreshOnNetworkChange = false;
 }

@@ -70,7 +70,7 @@ export function useInactiveListener(suppress = false) {
   const { active, error, activate } = useWeb3ReactCore(); // specifically using useWeb3React because of what this hook does
 
   useEffect(() => {
-    const { ethereum } = window as any;
+    const { ethereum } = window;
 
     if (ethereum && ethereum.on && !active && !error && !suppress) {
       const handleChainChanged = () => {

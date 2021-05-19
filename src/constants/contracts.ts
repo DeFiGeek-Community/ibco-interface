@@ -1,10 +1,9 @@
 // TODO: build per environment
-const FactoryAddressLinkeby = '0x32Fd8cf8b7348A7F9d714DB92Fe4d44A8f9A179b';
+const FactoryAddressLinkeby = '0x2EE46278E7AFbA775000Fd818c02705e84c18795';
 export const FACTORY_CONTRACT_ADDRESS = FactoryAddressLinkeby;
 
 const TemplatesMapLinkeby: { [templateAddress: string]: string } = {
-  '0x247Eb9eE3D5067B6b66303564ADc94C73746036A': 'BulksaleV1',
-  '0xC328a0A0A70Acec92AD9970ecD58bA6D4787785E': 'BulksaleV1.sol__1620876764',
+  '0x7F251A6c7d6343ec0a46C14690920AA6C7C0d8a6': 'BulksaleV1.0.sol',
 };
 export const TemplatesMap = TemplatesMapLinkeby;
 
