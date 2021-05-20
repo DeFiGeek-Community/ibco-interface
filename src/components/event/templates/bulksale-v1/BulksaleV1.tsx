@@ -40,6 +40,10 @@ export default function BulksaleV1(props: Props) {
   }
 
   useInterval(() => {
+    if (!props.data.totalDonations) {
+      return;
+    }
+
     const donatedTokenName = getTokenName(
       props.data.eventSummary.donatedTokenSymbol
     );

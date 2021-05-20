@@ -84,27 +84,30 @@ export default function EventEditorCreate() {
       argsForClone,
     ];
 
-    console.log('コントラクト', contract, args);
+    console.log(
+      'コントラクト',
+      contract,
+      args,
+      library.getSigner(),
+      await library.listAccounts()
+    );
 
     try {
-      const estimatedGasLimit = await contract.estimateGas['deploy'](
-        ...args,
-        {}
-      );
+      const estimatedGasLimit = await signer.estimateGas['deploy'](...args, {});
       console.log('ガス', estimatedGasLimit);
 
-      // signer
-      //   .deploy(...args)
-      //   .then((res: any) => {
-      //     console.log('deploy結果', res);
-      //     message.info(`作成しました！　${res}`);
-      //   })
-      //   .catch((error: any) => {
-      //     console.error('deploy結果', error);
-      //     message.warning(
-      //       `作成できませんでした。。　${error.message.substring(0, 20)}...`
-      //     );
-      //   });
+      signer
+        .deploy(...args)
+        .then((res: any) => {
+          console.log('deploy結果', res);
+          message.info(`作成しました！　${res}`);
+        })
+        .catch((error: any) => {
+          console.error('deploy結果', error);
+          message.warning(
+            `作成できませんでした。。　${error.message.substring(0, 20)}...`
+          );
+        });
     } catch (error) {
       console.error(error);
       message.error(
