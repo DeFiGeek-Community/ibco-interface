@@ -1,6 +1,16 @@
 import { AddressZero } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
-import { Button, Form, Input, Row, Col, message, InputNumber } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  Row,
+  Col,
+  message,
+  InputNumber,
+  Select,
+  Divider,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
@@ -9,13 +19,18 @@ import BulksaleV1Json from '../../abis/BulksaleV1.json';
 import FactoryJson from '../../abis/Factory.json';
 import { Container, Main } from '../../components/Layout';
 import { H1 } from '../../components/Layout';
-import { FACTORY_CONTRACT_ADDRESS } from '../../constants/contracts';
+import {
+  FACTORY_CONTRACT_ADDRESS,
+  templateNames,
+} from '../../constants/contracts';
 import {
   calculateGasMargin,
   getContract,
   useActiveWeb3React,
 } from '../../hooks/useWeb3';
 import { getAbiArgs } from '../../utils/web3';
+
+const { Option } = Select;
 
 export default function EventEditorCreate() {
   const [data, setData] = useState({} as any);
@@ -72,24 +87,24 @@ export default function EventEditorCreate() {
     console.log('コントラクト', contract, args);
 
     try {
-      // const estimatedGasLimit = await contract.estimateGas['deploy'](
-      //   ...args,
-      //   {}
-      // );
-      // console.log('ガス', estimatedGasLimit);
+      const estimatedGasLimit = await contract.estimateGas['deploy'](
+        ...args,
+        {}
+      );
+      console.log('ガス', estimatedGasLimit);
 
-      signer
-        .deploy(...args)
-        .then((res: any) => {
-          console.log('deploy結果', res);
-          message.info(`作成しました！　${res}`);
-        })
-        .catch((error: any) => {
-          console.error('deploy結果', error);
-          message.warning(
-            `作成できませんでした。。　${error.message.substring(0, 20)}...`
-          );
-        });
+      // signer
+      //   .deploy(...args)
+      //   .then((res: any) => {
+      //     console.log('deploy結果', res);
+      //     message.info(`作成しました！　${res}`);
+      //   })
+      //   .catch((error: any) => {
+      //     console.error('deploy結果', error);
+      //     message.warning(
+      //       `作成できませんでした。。　${error.message.substring(0, 20)}...`
+      //     );
+      //   });
     } catch (error) {
       console.error(error);
       message.error(
@@ -147,6 +162,16 @@ export default function EventEditorCreate() {
 
       <Main>
         <H1>イベント編集</H1>
+
+        <Select defaultValue={templateNames[0]} style={{ width: 200 }}>
+          {templateNames.map((templateName, index) => (
+            <Option key={index} value={templateName}>
+              {templateName.replace('.sol', '')}
+            </Option>
+          ))}
+        </Select>
+
+        <Divider />
 
         <Form
           name="fundraiser_form_controls"
