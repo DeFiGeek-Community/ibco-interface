@@ -21,7 +21,7 @@ export const masterDataForFirstEvent = {
     discord: 'https://discord.gg/FQYXqVBEnh',
     github: 'https://github.com/DeFiGeek-Community',
   },
-  contractAddress: '0x785e980BEC067096de1538d3875bcFe537dcc3f2',
+  contractAddress: '0x650c1D6aCD5eb4d07Bd68e91Dd898BfAECbbA9cA',
   templateAddress: Object.keys(TemplatesMap)[0],
   logoUrl: '/favicon.ico',
 };

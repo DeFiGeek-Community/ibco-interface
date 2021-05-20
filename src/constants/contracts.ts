@@ -6,7 +6,7 @@ export const FACTORY_CONTRACT_ADDRESS = FactoryAddressLinkeby;
  * Template
  */
 
-export const templateNames = ['BulksaleV1.0.sol', 'Bulksalev1.1.sol'] as const;
+export const templateNames = ['BulksaleV1.0.sol', 'BulksaleV2.sol'] as const;
 export type TemplateName = typeof templateNames[number];
 
 const TemplatesMapLinkeby: { [templateAddress: string]: TemplateName } = {
