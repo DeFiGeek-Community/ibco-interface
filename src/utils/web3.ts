@@ -1,11 +1,11 @@
 import { ethers } from 'ethers';
-import { BulksaleV1Args } from '../constants/contracts';
+import { BulksaleV1Args, templateNames } from '../constants/contracts';
 
 // ref: BulksaleFactory/test/index.test.ts
 export function getAbiArgs(templateName: string, args: BulksaleV1Args) {
   let types;
   let values;
-  if (templateName == 'BulksaleV1.sol') {
+  if (templateName == templateNames[0]) {
     types = [
       'address',
       'uint',

@@ -6,7 +6,7 @@ import Footer from '../../components/Footer';
 import { Container, Main } from '../../components/Layout';
 import { WalletContext } from '../../components/contexts';
 import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1';
-import { TemplatesMap } from '../../constants/contracts';
+import { templateNames, TemplatesMap } from '../../constants/contracts';
 
 // note: 初回イベント用の埋め込みマスターデータ
 export const masterDataForFirstEvent = {
@@ -89,7 +89,7 @@ export default function EventDetail() {
 
   const selectTemplate = () => {
     switch (TemplatesMap[templateAddress]) {
-      case 'BulksaleV1.0.sol':
+      case templateNames[0]:
         return <BulksaleV1 data={data}></BulksaleV1>;
       default:
         return (

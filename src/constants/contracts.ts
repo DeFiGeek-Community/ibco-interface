@@ -2,7 +2,14 @@
 const FactoryAddressLinkeby = '0x2EE46278E7AFbA775000Fd818c02705e84c18795';
 export const FACTORY_CONTRACT_ADDRESS = FactoryAddressLinkeby;
 
-const TemplatesMapLinkeby: { [templateAddress: string]: string } = {
+/**
+ * Template
+ */
+
+export const templateNames = ['BulksaleV1.0.sol', 'Bulksalev1.1.sol'] as const;
+export type TemplateName = typeof templateNames[number];
+
+const TemplatesMapLinkeby: { [templateAddress: string]: TemplateName } = {
   '0x7F251A6c7d6343ec0a46C14690920AA6C7C0d8a6': 'BulksaleV1.0.sol',
 };
 export const TemplatesMap = TemplatesMapLinkeby;
