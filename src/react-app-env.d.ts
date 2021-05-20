@@ -9,3 +9,7 @@ interface Window {
   };
   web3?: Record<string, unknown>;
 }
+
+declare module '@metamask/jazzicon' {
+  export default function (diameter: number, seed: number): HTMLElement;
+}
