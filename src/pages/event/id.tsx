@@ -1,4 +1,3 @@
-import { Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
@@ -6,6 +5,7 @@ import Footer from '../../components/Footer';
 import { Container, Main } from '../../components/Layout';
 import { WalletContext } from '../../components/contexts';
 import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1';
+import Web3Status from '../../components/wallet/ConnectButton';
 import { templateNames, TemplatesMap } from '../../constants/contracts';
 
 // note: 初回イベント用の埋め込みマスターデータ
@@ -117,14 +117,10 @@ export default function EventDetail() {
           <link rel="icon" href={masterDataForFirstEvent.logoUrl} />
         </Helmet>
 
-        <div style={{ textAlign: 'right', width: '100%' }}>
-          <Button
-            type="primary"
-            style={{ margin: '24px 24px 0' }}
-            onClick={onClickConnectWallet}
-          >
-            Connect to a wallet
-          </Button>
+        <div
+          style={{ textAlign: 'right', width: '100%', padding: '24px 24px 0' }}
+        >
+          <Web3Status />
         </div>
 
         <Main>{selectTemplate()}</Main>

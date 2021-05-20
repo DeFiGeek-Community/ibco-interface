@@ -19,6 +19,7 @@ import BulksaleV1Json from '../../abis/BulksaleV1.json';
 import FactoryJson from '../../abis/Factory.json';
 import { Container, Main } from '../../components/Layout';
 import { H1 } from '../../components/Layout';
+import Web3Status from '../../components/wallet/ConnectButton';
 import {
   FACTORY_CONTRACT_ADDRESS,
   templateNames,
@@ -157,10 +158,10 @@ export default function EventEditorCreate() {
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
 
-      <div style={{ textAlign: 'right', width: '100%' }}>
-        <Button type="primary" style={{ margin: '24px 24px 0' }}>
-          Connect to a wallet
-        </Button>
+      <div
+        style={{ textAlign: 'right', width: '100%', padding: '24px 24px 0' }}
+      >
+        <Web3Status />
       </div>
 
       <Main>
