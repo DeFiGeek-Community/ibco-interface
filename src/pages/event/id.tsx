@@ -10,7 +10,7 @@ import { templateNames, TemplatesMap } from '../../constants/contracts';
 
 // note: 初回イベント用の埋め込みマスターデータ
 export const masterDataForFirstEvent = {
-  title: '[2021年4月の寄付イベント名]',
+  title: '[2021年7月の寄付イベント名]',
   organizer: 'Presented by DeFiGeek Community JAPAN',
   description: '説明説明説明',
   donatedTokenSymbol: 'eth' as const, // 寄付するトークンのシンボル
@@ -29,13 +29,13 @@ export const masterDataForFirstEvent = {
 export const mockData = {
   eventSummary: {
     ...masterDataForFirstEvent,
-    unixStartDate: Math.floor(new Date(2021, 2, 10).getTime() / 1000), // 開始日時。unixTime形式
-    unixEndDate: Math.floor(new Date(2021, 3, 30).getTime() / 1000), // 終了日時。unixTime形式
-    totalProvidedTokens: 3600, // 配布トークン数
-    targetFigure: 10000, // 目標額
+    unixStartDate: Math.floor(new Date(2021, 6, 9, 12).getTime() / 1000), // 開始日時。unixTime形式
+    unixEndDate: Math.floor(new Date(2021, 6, 14, 23, 59).getTime() / 1000), // 終了日時。unixTime形式
+    totalProvidedTokens: 36000, // 配布トークン数
+    targetFigure: 1000, // 目標額
     minTargetFigure: 100, // 最小到達額
   },
-  totalDonations: 1070.1234567891, // 全体の寄付総額
+  totalDonations: 270.1234567891, // 全体の寄付総額
   myTotalDonations: 1.8, // 当アカウントの寄付総額
 };
 
