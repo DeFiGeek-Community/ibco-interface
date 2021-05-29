@@ -1,7 +1,6 @@
+import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
-import { useContext } from 'react';
 import { CryptoCurrency, formatPrice } from '../../../../utils/prices';
-import { WalletContext } from '../../../contexts';
 
 type Props = {
   inputValue: number;
@@ -20,7 +19,9 @@ const PersonalStatistics = ({
   providedTokenSymbol,
   donatedTokenSymbol,
 }: Props) => {
-  const { isConnected, isLoading } = useContext(WalletContext);
+  const { active } = useWeb3React();
+  // FIXME: replace mock
+  const isLoading = false;
 
   function getExpectedTxjpAmount(
     myTotalDonations: number,
@@ -44,7 +45,7 @@ const PersonalStatistics = ({
           <p>
             {providedTokenSymbol}獲得予定数:{' '}
             <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {isConnected
+              {active
                 ? formatPrice(
                     getExpectedTxjpAmount(myTotalDonations, inputValue),
                     providedTokenSymbol
@@ -56,16 +57,14 @@ const PersonalStatistics = ({
           <p>
             現寄付
             <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {isConnected
+              {active
                 ? formatPrice(myTotalDonations, donatedTokenSymbol)
                 : '????'}{' '}
               {donatedTokenSymbol.toUpperCase()}
             </span>{' '}
             + 新寄付
             <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {isConnected
-                ? formatPrice(inputValue, donatedTokenSymbol)
-                : '????'}{' '}
+              {active ? formatPrice(inputValue, donatedTokenSymbol) : '????'}{' '}
               {donatedTokenSymbol.toUpperCase()}
             </span>
           </p>

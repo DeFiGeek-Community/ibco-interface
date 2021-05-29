@@ -296,9 +296,6 @@ export default function WalletModal({
     if (error) {
       return (
         <UpperSection>
-          <CloseIcon onClick={toggleWalletModal}>
-            <CloseColor />
-          </CloseIcon>
           <HeaderRow>
             {error instanceof UnsupportedChainIdError
               ? 'Wrong Network'

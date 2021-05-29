@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import { Container, Main } from '../../components/Layout';
-import { WalletContext } from '../../components/contexts';
 import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1';
 import Web3Status from '../../components/wallet/ConnectButton';
 import { templateNames, TemplatesMap } from '../../constants/contracts';
@@ -45,29 +44,6 @@ export default function EventDetail() {
   const [data, setData] = useState<any>({}); // TODO: 型
   const location = useLocation();
 
-  // for Wallet Context
-  const [isLoading, setIsLoading] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [address, setAddress] = useState('');
-  const handleSetIsLoading = useCallback(
-    (isLoading: boolean) => {
-      setIsLoading(isLoading);
-    },
-    [setIsLoading]
-  );
-  const handleSetIsConnected = useCallback(
-    (isConnected: boolean) => {
-      setIsConnected(isConnected);
-    },
-    [setIsConnected]
-  );
-  const handleSetAddress = useCallback(
-    (address: string) => {
-      setAddress(address);
-    },
-    [setAddress]
-  );
-
   // Get the event ID from URL, and get event detail via wallet.
   useEffect(() => {
     console.log('get contract address!', location.hash);
@@ -83,10 +59,6 @@ export default function EventDetail() {
     setData(mockData);
   }, []);
 
-  function onClickConnectWallet() {
-    console.log('ウォレットコネクト');
-  }
-
   const selectTemplate = () => {
     switch (TemplatesMap[templateAddress]) {
       case templateNames[0]:
@@ -101,32 +73,21 @@ export default function EventDetail() {
   };
 
   return (
-    <WalletContext.Provider
-      value={{
-        isLoading,
-        isConnected,
-        address,
-        handleSetIsLoading,
-        handleSetIsConnected,
-        handleSetAddress,
-      }}
-    >
-      <Container>
-        <Helmet>
-          <title>{masterDataForFirstEvent.title}</title>
-          <link rel="icon" href={masterDataForFirstEvent.logoUrl} />
-        </Helmet>
+    <Container>
+      <Helmet>
+        <title>{masterDataForFirstEvent.title}</title>
+        <link rel="icon" href={masterDataForFirstEvent.logoUrl} />
+      </Helmet>
 
-        <div
-          style={{ textAlign: 'right', width: '100%', padding: '24px 24px 0' }}
-        >
-          <Web3Status />
-        </div>
+      <div
+        style={{ textAlign: 'right', width: '100%', padding: '24px 24px 0' }}
+      >
+        <Web3Status />
+      </div>
 
-        <Main>{selectTemplate()}</Main>
+      <Main>{selectTemplate()}</Main>
 
-        <Footer referenceList={masterDataForFirstEvent.referenceList}></Footer>
-      </Container>
-    </WalletContext.Provider>
+      <Footer referenceList={masterDataForFirstEvent.referenceList}></Footer>
+    </Container>
   );
 }

@@ -1,8 +1,8 @@
+import { useWeb3React } from '@web3-react/core';
 import { format } from 'date-fns';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import useInterval from '../../../hooks/useInterval';
-import { WalletContext } from '../../contexts';
 
 type Props = {
   unixEndDate: number;
@@ -17,11 +17,14 @@ const initialCountdown = {
 };
 
 export default function CountdownCalendar({ unixEndDate }: Props) {
+  const { active } = useWeb3React();
   const [countdown, setCountdown] = useState(initialCountdown);
-  const { isConnected, isLoading } = useContext(WalletContext);
+
+  // FIXME: replace mock
+  const isLoading = false;
 
   useInterval(() => {
-    if (!isConnected || !unixEndDate) {
+    if (!active || !unixEndDate) {
       setCountdown({ days: '?', hours: '?', mins: '?', secs: '?' });
       return;
     }
@@ -32,7 +35,7 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
 
   return (
     <div>
-      {isConnected && !isLoading ? (
+      {active && !isLoading ? (
         <p> {format(unixEndDate * 1000, 'yyyy年MM月dd日まで')}</p>
       ) : null}
       <CountdownPanel>
@@ -51,7 +54,7 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
         <div className="countdown-value">{countdown.secs}</div>
         <div className="countdown-unit">SECS</div>
       </CountdownPanel>
-      {isConnected && unixEndDate < Date.now() && (
+      {active && unixEndDate * 1000 < Date.now() && (
         <div
           style={{
             textAlign: 'center',
