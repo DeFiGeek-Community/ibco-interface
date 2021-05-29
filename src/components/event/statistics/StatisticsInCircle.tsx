@@ -1,12 +1,11 @@
+import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
 import { Circle } from 'rc-progress';
-import { useContext } from 'react';
 import {
   CryptoCurrency,
   FiatCurrency,
   formatPrice,
 } from '../../../utils/prices';
-import { WalletContext } from '../../contexts';
 
 type Props = {
   totalDonations: number;
@@ -25,7 +24,9 @@ export default function StatisticsInCircle({
   fiatRate,
   fiatSymbol,
 }: Props) {
-  const { isConnected, isLoading } = useContext(WalletContext);
+  const { active } = useWeb3React();
+  // FIXME: replace mock
+  const isLoading = false;
 
   function getTargetPercetage() {
     return (totalDonations / targetFigure) * 100;
@@ -56,21 +57,21 @@ export default function StatisticsInCircle({
         {!isLoading ? (
           <>
             <div>
-              {isConnected
+              {active
                 ? formatPrice(totalDonations, donatedTokenSymbol)
                 : '????'}{' '}
               {donatedTokenSymbol.toUpperCase()}
             </div>
             <div>
               ¥
-              {isConnected
+              {active
                 ? formatPrice(
                     getFiatConversionAmount(totalDonations),
                     fiatSymbol
                   )
                 : '????'}
             </div>
-            {isConnected && !!minTargetFigure ? (
+            {active && !!minTargetFigure ? (
               <p
                 style={{
                   textAlign: 'center',
