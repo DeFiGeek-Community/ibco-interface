@@ -314,10 +314,10 @@ export default function WalletModal({
         </UpperSection>
       );
     }
+    // when wallet is selected
     if (account && walletView === WALLET_VIEWS.ACCOUNT) {
       return (
         <AccountDetails
-          toggleWalletModal={toggleWalletModal}
           pendingTransactions={pendingTransactions}
           confirmedTransactions={confirmedTransactions}
           ENSName={ENSName}
@@ -325,11 +325,9 @@ export default function WalletModal({
         />
       );
     }
+    // wallet selection view
     return (
       <UpperSection>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
         {walletView !== WALLET_VIEWS.ACCOUNT ? (
           <HeaderRow color="blue">
             <HoverText
@@ -351,14 +349,17 @@ export default function WalletModal({
           <Card style={{ marginBottom: '16px' }}>
             <Row style={{ flexWrap: 'nowrap' }}>
               <p>
-                ウォレットを繋げると、以下に同意したことになります。’{' '}
-                <ExternalLink href="https://gov.defigeek.xyz/">
-                  Terms of Service
-                </ExternalLink>{' '}
-                <ExternalLink href="https://gov.defigeek.xyz/">
-                  免責事項
-                </ExternalLink>
-                .
+                ウォレットを繋げると、以下に同意したことになります。{' '}
+                <div>
+                  <ExternalLink href="https://gov.defigeek.xyz/">
+                    利用規約
+                  </ExternalLink>
+                </div>
+                <div>
+                  <ExternalLink href="https://gov.defigeek.xyz/">
+                    免責事項
+                  </ExternalLink>
+                </div>
               </p>
             </Row>
           </Card>
@@ -378,7 +379,7 @@ export default function WalletModal({
   }
 
   return (
-    <Modal visible={walletModalOpen} onCancel={toggleWalletModal}>
+    <Modal visible={walletModalOpen} onCancel={toggleWalletModal} footer={null}>
       <Wrapper>{getModalContent()}</Wrapper>
     </Modal>
   );

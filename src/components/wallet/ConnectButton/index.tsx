@@ -191,19 +191,27 @@ function Web3StatusInner() {
         onClick={toggleWalletModal}
         // pending={hasPendingTransactions}
       >
-        {hasPendingTransactions ? (
-          <Row>
-            <Text>{pending?.length} Pending</Text> <Loader />
-          </Row>
-        ) : (
-          <>
-            {/* <Text>{ENSName || shortenAddress(account)}</Text> */}
-            <Text>{shortenAddress(account)}</Text>
-          </>
-        )}
-        {!hasPendingTransactions && connector && (
-          <StatusIcon connector={connector} />
-        )}
+        <span
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {!hasPendingTransactions && connector && (
+            <StatusIcon connector={connector} />
+          )}
+          {hasPendingTransactions ? (
+            <Row>
+              <Text>{pending?.length} Pending</Text> <Loader />
+            </Row>
+          ) : (
+            <>
+              {/* <Text>{ENSName || shortenAddress(account)}</Text> */}
+              <Text>{shortenAddress(account)}</Text>
+            </>
+          )}
+        </span>
       </AntButton>
     );
   } else if (error) {

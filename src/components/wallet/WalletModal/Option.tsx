@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { ExternalLink } from '../../ExternalLink';
 
 const InfoCard = styled.button<{ active?: boolean }>`
@@ -29,8 +29,7 @@ const OptionCardLeft = styled.div`
   height: 100%;
 `;
 
-const OptionCardClickable = styled(OptionCard as any)<{
-  [key: string]: any;
+const OptionCardClickable: any = styled(OptionCard as any)<{
   clickable?: boolean;
 }>`
   margin-top: 0;
@@ -116,7 +115,12 @@ export default function Option({
   id: string;
 }) {
   const content = (
-    <OptionCardClickable>
+    <OptionCardClickable
+      id={id}
+      onClick={onClick}
+      clickable={clickable && !active}
+      active={active}
+    >
       <OptionCardLeft>
         <HeaderText color={color}>
           {active ? (

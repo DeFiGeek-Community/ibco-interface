@@ -212,7 +212,6 @@ const MainWalletAction = styled(WalletAction)`
 // }
 
 interface AccountDetailsProps {
-  toggleWalletModal: () => void;
   pendingTransactions: string[];
   confirmedTransactions: string[];
   ENSName?: string;
@@ -220,7 +219,6 @@ interface AccountDetailsProps {
 }
 
 export default function AccountDetails({
-  toggleWalletModal,
   pendingTransactions,
   confirmedTransactions,
   ENSName,
@@ -294,9 +292,6 @@ export default function AccountDetails({
   return (
     <>
       <UpperSection>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
         <HeaderRow>Account</HeaderRow>
         <AccountSection>
           <YourAccount>
