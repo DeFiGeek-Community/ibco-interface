@@ -79,6 +79,7 @@ export default function BulksaleV1(props: Props) {
           donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
           fiatSymbol={props.data.eventSummary.fiatSymbol}
           fiatRate={fiatRate}
+          contractAddress={props.data.eventSummary.contractAddress}
         ></StatisticsInCircle>
 
         <CalendarInCircle

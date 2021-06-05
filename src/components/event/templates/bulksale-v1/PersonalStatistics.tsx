@@ -43,7 +43,7 @@ const PersonalStatistics = ({
       {!isLoading ? (
         <>
           <p>
-            {providedTokenSymbol}獲得予定数:{' '}
+            獲得予定数:{' '}
             <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
               {active
                 ? formatPrice(
