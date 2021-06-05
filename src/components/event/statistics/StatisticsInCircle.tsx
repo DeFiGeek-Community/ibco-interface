@@ -1,11 +1,13 @@
 import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
 import { Circle } from 'rc-progress';
+import { ETHERSCAN_URL } from '../../../constants/api';
 import {
   CryptoCurrency,
   FiatCurrency,
   formatPrice,
 } from '../../../utils/prices';
+import { ExternalLink } from '../../ExternalLink';
 
 type Props = {
   totalDonations: number;
@@ -14,6 +16,7 @@ type Props = {
   donatedTokenSymbol: CryptoCurrency;
   fiatSymbol: FiatCurrency;
   fiatRate: number;
+  contractAddress: string;
 };
 
 export default function StatisticsInCircle({
@@ -23,6 +26,7 @@ export default function StatisticsInCircle({
   donatedTokenSymbol,
   fiatRate,
   fiatSymbol,
+  contractAddress,
 }: Props) {
   const { active } = useWeb3React();
   // FIXME: replace mock
@@ -57,9 +61,15 @@ export default function StatisticsInCircle({
         {!isLoading ? (
           <>
             <div>
-              {active
-                ? formatPrice(totalDonations, donatedTokenSymbol)
-                : '????'}{' '}
+              {active ? (
+                <ExternalLink
+                  href={`${ETHERSCAN_URL}address/${contractAddress}`}
+                >
+                  {formatPrice(totalDonations, donatedTokenSymbol)}
+                </ExternalLink>
+              ) : (
+                '????'
+              )}{' '}
               {donatedTokenSymbol.toUpperCase()}
             </div>
             <div>
