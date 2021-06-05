@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import { useCallback, useContext } from 'react';
+import { useContext } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
@@ -16,20 +16,13 @@ import { useActiveWeb3React } from '../../../hooks/useWeb3';
 import { AppDispatch } from '../../../state';
 import { getEtherscanLink } from '../../../utils/externalLink';
 import { shortenAddress } from '../../../utils/web3';
-import {
-  ExternalLink,
-  //LinkStyledButton,
-  //TYPE
-} from '../../ExternalLink';
+import { ExternalLink } from '../../ExternalLink';
 // import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg';
 // import FortmaticIcon from '../../assets/images/fortmaticIcon.png';
 // import PortisIcon from '../../assets/images/portisIcon.png';
 // import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg';
-// import { clearAllTransactions } from '../../state/transactions/actions';
 import Identicon from '../Identicon';
-// import { AutoRow } from '../Row';
 import Copy from './Copy';
-// import Transaction from './Transaction';
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -201,26 +194,12 @@ const MainWalletAction = styled(WalletAction)`
   color: ${({ theme }) => theme.primary1};
 `;
 
-// function renderTransactions(transactions: string[]) {
-//   return (
-//     <TransactionListWrapper>
-//       {transactions.map((hash, i) => {
-//         return <Transaction key={i} hash={hash} />;
-//       })}
-//     </TransactionListWrapper>
-//   );
-// }
-
 interface AccountDetailsProps {
-  pendingTransactions: string[];
-  confirmedTransactions: string[];
   ENSName?: string;
   openOptions: () => void;
 }
 
 export default function AccountDetails({
-  pendingTransactions,
-  confirmedTransactions,
   ENSName,
   openOptions,
 }: AccountDetailsProps) {
@@ -284,10 +263,6 @@ export default function AccountDetails({
     }
     return null;
   }
-
-  // const clearAllTransactionsCallback = useCallback(() => {
-  //   if (chainId) dispatch(clearAllTransactions({ chainId }));
-  // }, [dispatch, chainId]);
 
   return (
     <>
@@ -404,24 +379,6 @@ export default function AccountDetails({
           </YourAccount>
         </AccountSection>
       </UpperSection>
-      {/* {!!pendingTransactions.length || !!confirmedTransactions.length ? (
-        <LowerSection>
-          <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
-            <TYPE.body>Recent Transactions</TYPE.body>
-            <LinkStyledButton onClick={clearAllTransactionsCallback}>
-              (clear all)
-            </LinkStyledButton>
-          </AutoRow>
-          {renderTransactions(pendingTransactions)}
-          {renderTransactions(confirmedTransactions)}
-        </LowerSection>
-      ) : (
-        <LowerSection>
-          <TYPE.body color={theme.text1}>
-            Your transactions will appear here...
-          </TYPE.body>
-        </LowerSection>
-      )} */}
     </>
   );
 }
