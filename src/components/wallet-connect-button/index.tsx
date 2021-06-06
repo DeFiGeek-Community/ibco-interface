@@ -14,14 +14,14 @@ import {
   // portis,
   // walletconnect,
   // walletlink,
-} from '../../../connectors';
-import { NETWORK_CONTEXT_NAME } from '../../../constants/web3';
-// import useENSName from '../../../hooks/useENSName';
-import { useWalletModalToggle } from '../../../state/application/hooks';
-import { shortenAddress } from '../../../utils/web3';
+} from '../../connectors';
+import { NETWORK_CONTEXT_NAME } from '../../constants/web3';
+import useENSName from '../../hooks/useENSName';
+import { useWalletModalToggle } from '../../state/application/hooks';
+import { shortenAddress } from '../../utils/web3';
 // import PortisIcon from '../../..assets/images/portisIcon.png';
-import Identicon from '../Identicon';
-import WalletModal from '../WalletModal';
+import Identicon from './Identicon';
+import WalletModal from './WalletModal';
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -155,7 +155,7 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
 function Web3StatusInner() {
   const { account, connector, error } = useWeb3React();
 
-  // const { ENSName } = useENSName(account ?? undefined);
+  const { ENSName } = useENSName(account ?? undefined);
   const toggleWalletModal = useWalletModalToggle();
 
   if (account) {
@@ -169,8 +169,7 @@ function Web3StatusInner() {
           }}
         >
           {connector && <StatusIcon connector={connector} />}
-          {/* <Text>{ENSName || shortenAddress(account)}</Text> */}
-          <Text>{shortenAddress(account)}</Text>
+          <Text>{ENSName || shortenAddress(account)}</Text>
         </span>
       </AntButton>
     );
@@ -200,7 +199,7 @@ export default function Web3Status() {
   const { active, account } = useWeb3React();
   const contextNetwork = useWeb3React(NETWORK_CONTEXT_NAME);
 
-  // const { ENSName } = useENSName(account ?? undefined);
+  const { ENSName } = useENSName(account ?? undefined);
 
   if (!contextNetwork.active && !active) {
     return null;
@@ -209,9 +208,7 @@ export default function Web3Status() {
   return (
     <>
       <Web3StatusInner />
-      <WalletModal
-      // ENSName={ENSName ?? undefined}
-      />
+      <WalletModal ENSName={ENSName ?? undefined} />
     </>
   );
 }
