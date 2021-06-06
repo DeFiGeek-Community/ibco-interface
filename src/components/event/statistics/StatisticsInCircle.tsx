@@ -42,62 +42,58 @@ export default function StatisticsInCircle({
 
   return (
     <div style={{ position: 'relative', minWidth: '500px' }}>
-      <Circle
-        percent={getTargetPercetage()}
-        strokeWidth={4}
-        strokeColor="#D3D3D3"
-      />
-      <span
-        style={{
-          display: 'inline-block',
-          position: 'absolute',
-          top: 150,
-          left: 60,
-          fontSize: '2rem',
-          zIndex: 100,
-        }}
-      >
-        <h3>Total Provided</h3>
-        {!isLoading ? (
-          <>
-            <div>
-              {active ? (
-                <ExternalLink
-                  href={`${ETHERSCAN_URL}address/${contractAddress}`}
+      <ExternalLink href={`${ETHERSCAN_URL}address/${contractAddress}`}>
+        <Circle
+          percent={getTargetPercetage()}
+          strokeWidth={4}
+          strokeColor="#D3D3D3"
+        />
+        <span
+          style={{
+            display: 'inline-block',
+            position: 'absolute',
+            top: 150,
+            left: 60,
+            fontSize: '2rem',
+            zIndex: 100,
+          }}
+        >
+          <h3>Total Provided</h3>
+          {!isLoading ? (
+            <>
+              <div>
+                {active
+                  ? formatPrice(totalDonations, donatedTokenSymbol)
+                  : '????'}{' '}
+                {donatedTokenSymbol.toUpperCase()}
+              </div>
+              <div>
+                ¥
+                {active
+                  ? formatPrice(
+                      getFiatConversionAmount(totalDonations),
+                      fiatSymbol
+                    )
+                  : '????'}
+              </div>
+              {active && !!minTargetFigure ? (
+                <p
+                  style={{
+                    textAlign: 'center',
+                    fontSize: '1rem',
+                  }}
                 >
-                  {formatPrice(totalDonations, donatedTokenSymbol)}
-                </ExternalLink>
-              ) : (
-                '????'
-              )}{' '}
-              {donatedTokenSymbol.toUpperCase()}
-            </div>
-            <div>
-              ¥
-              {active
-                ? formatPrice(
-                    getFiatConversionAmount(totalDonations),
-                    fiatSymbol
-                  )
-                : '????'}
-            </div>
-            {active && !!minTargetFigure ? (
-              <p
-                style={{
-                  textAlign: 'center',
-                  fontSize: '1rem',
-                }}
-              >
-                最小到達額 {minTargetFigure}
-                {donatedTokenSymbol.toUpperCase()}{' '}
-                {totalDonations >= minTargetFigure ? 'を達成しました🎉' : ''}
-              </p>
-            ) : null}
-          </>
-        ) : (
-          <Skeleton active paragraph={{ rows: 2 }}></Skeleton>
-        )}
-      </span>
+                  最小到達額 {minTargetFigure}
+                  {donatedTokenSymbol.toUpperCase()}{' '}
+                  {totalDonations >= minTargetFigure ? 'を達成しました🎉' : ''}
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <Skeleton active paragraph={{ rows: 2 }}></Skeleton>
+          )}
+        </span>
+      </ExternalLink>
     </div>
   );
 }
