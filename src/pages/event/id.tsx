@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import { Container, Main } from '../../components/Layout';
 import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1';
-import Web3Status from '../../components/wallet/ConnectButton';
+import Web3Status from '../../components/wallet-connect-button';
 import { templateNames, TemplatesMap } from '../../constants/contracts';
 
 // note: 初回イベント用の埋め込みマスターデータ

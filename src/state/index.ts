@@ -3,12 +3,14 @@ import { save, load } from 'redux-localstorage-simple';
 
 import application from './application/reducer';
 import { updateVersion } from './global/actions';
+import multicall from './multicall/reducer';
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions'];
 
 const store = configureStore({
   reducer: {
     application,
+    multicall,
   },
   middleware: [
     ...getDefaultMiddleware({ thunk: false }),

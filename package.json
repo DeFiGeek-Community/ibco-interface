@@ -3,15 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "yarn compile-external-abi-types && react-scripts start",
+    "build": "yarn compile-external-abi-types && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "yarn lint --fix && yarn format",
     "format": "prettier --config .prettierrc.json --write '**/*.tsx'",
     "diff-check": "git diff --exit-code -- .",
-    "ci:format": "yarn format && yarn diff-check"
+    "ci:format": "yarn format && yarn diff-check",
+    "compile-external-abi-types": "typechain --target ethers-v5 --out-dir src/abis/types './src/abis/**/*.json'"
   },
   "dependencies": {
     "@ethersproject/experimental": "^5.1.2",
@@ -41,6 +42,7 @@
     "@testing-library/jest-dom": "5.11.4",
     "@testing-library/react": "11.1.0",
     "@testing-library/user-event": "12.1.10",
+    "@typechain/ethers-v5": "^7.0.0",
     "@types/big.js": "^6.0.2",
     "@types/classnames": "^2.2.11",
     "@types/jest": "^26.0.15",
@@ -59,6 +61,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "node": "^12.0.0",
     "prettier": "^2.2.1",
+    "typechain": "^5.0.0",
     "typescript": "^4.2.3"
   },
   "browserslist": {
