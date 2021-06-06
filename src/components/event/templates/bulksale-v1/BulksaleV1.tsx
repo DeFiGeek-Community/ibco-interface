@@ -99,7 +99,12 @@ export default function BulksaleV1(props: Props) {
               type="text"
               value={number}
               onChange={onNumberChange}
-              style={{ width: '300px', textAlign: 'right' }}
+              style={{
+                width: '300px',
+                textAlign: 'right',
+                color: 'black',
+                backgroundColor: 'white',
+              }}
             />
           </Form.Item>
           <Form.Item>
