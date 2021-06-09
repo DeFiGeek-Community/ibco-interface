@@ -40,7 +40,8 @@ export default function BulksaleV1(props: Props) {
 
   // get Fiat Rate.
   useInterval(() => {
-    if (!totalProvided) {
+    if (totalProvided === 0 && fiatRate > 0) {
+      // Skip because it is unnecessary.
       return;
     }
 
