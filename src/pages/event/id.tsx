@@ -7,22 +7,26 @@ import Footer from '../../components/Footer';
 import { Container, Main } from '../../components/Layout';
 import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1';
 import Web3Status from '../../components/wallet-connect-button';
-import { templateNames, TemplatesMap } from '../../constants/contracts';
+import {
+  FIRST_EVENT_CONTRACT_ADDRESS,
+  templateNames,
+  TemplatesMap,
+} from '../../constants/contracts';
 
 // note: Master data for first event.
 export const masterDataForFirstEvent = {
   title: '[2021年7月の寄付イベント名]',
   organizer: 'Presented by DeFiGeek Community JAPAN',
   description: '説明説明説明',
-  donatedTokenSymbol: 'eth' as const,
-  providedTokenSymbol: 'txjp' as const,
+  providedTokenSymbol: 'eth' as const,
+  distributedTokenSymbol: 'txjp' as const,
   fiatSymbol: 'jpy' as const,
   referenceList: {
     forum: 'https://gov.defigeek.xyz/',
     discord: 'https://discord.gg/FQYXqVBEnh',
     github: 'https://github.com/DeFiGeek-Community',
   },
-  contractAddress: '0x650c1D6aCD5eb4d07Bd68e91Dd898BfAECbbA9cA',
+  contractAddress: FIRST_EVENT_CONTRACT_ADDRESS,
   templateAddress: Object.keys(TemplatesMap)[0],
   logoUrl: '/favicon.ico',
 };
@@ -34,17 +38,17 @@ export const mockData = {
       zonedTimeToUtc('2021-06-09 01:00', 'Asia/Tokyo')
     ), // unixTime
     unixEndDate: getUnixTime(zonedTimeToUtc('2021-07-13 23:59', 'Asia/Tokyo')), // unixTime
-    totalProvidedTokens: 36000, // TXJP
-    minTargetFigure: 1, // ETH
+    totalDistributeAmount: 36000, // TXJP
+    minimalProvideAmount: 1, // ETH
   },
-  totalDonations: 0, // ETH
-  myTotalDonations: 0, // ETH
+  // totalProvided: 0, // ETH
+  // myTotalProvided: 0, // ETH
 };
 
 export default function EventDetail() {
   const [eventAddress, setEventAddress] = useState('');
   const [templateAddress, setTemplateAddress] = useState('');
-  const [data, setData] = useState<any>({}); // TODO: 型
+  const [data, setData] = useState<typeof mockData>({} as any); // TODO: 型
   const location = useLocation();
 
   // Get the event ID from URL, and get event detail via web3.
