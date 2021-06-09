@@ -10,8 +10,8 @@ import {
 import { ExternalLink } from '../../ExternalLink';
 
 type Props = {
-  totalDonations: number;
-  minTargetFigure: number;
+  totalProvided: number;
+  minimalProvideAmount: number;
   donatedTokenSymbol: CryptoCurrency;
   fiatSymbol: FiatCurrency;
   fiatRate: number;
@@ -20,8 +20,8 @@ type Props = {
 };
 
 export default function StatisticsInCircle({
-  totalDonations,
-  minTargetFigure,
+  totalProvided,
+  minimalProvideAmount,
   donatedTokenSymbol,
   fiatSymbol,
   fiatRate,
@@ -33,7 +33,7 @@ export default function StatisticsInCircle({
   const isLoading = false;
 
   function getTargetPercetage() {
-    return (totalDonations / minTargetFigure) * 100;
+    return (totalProvided / minimalProvideAmount) * 100;
   }
 
   function getFiatConversionAmount(token: number) {
@@ -75,7 +75,7 @@ export default function StatisticsInCircle({
                 }}
               >
                 {isStarting && active
-                  ? formatPrice(totalDonations, donatedTokenSymbol)
+                  ? formatPrice(totalProvided, donatedTokenSymbol)
                   : '????'}{' '}
                 {donatedTokenSymbol.toUpperCase()}
               </div>
@@ -87,7 +87,7 @@ export default function StatisticsInCircle({
                 ¥
                 {isStarting && active
                   ? formatPrice(
-                      getFiatConversionAmount(totalDonations),
+                      getFiatConversionAmount(totalProvided),
                       fiatSymbol
                     )
                   : '????'}

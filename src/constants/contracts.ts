@@ -4,11 +4,21 @@ import { SupportedChainId } from './chains';
 type AddressMap = { [chainId: number]: string };
 
 /**
+ * First Event
+ */
+const firstEventAddress = '';
+const firstEventAddressRinkeby = '0x650c1D6aCD5eb4d07Bd68e91Dd898BfAECbbA9cA';
+export const FIRST_EVENT_CONTRACT_ADDRESS =
+  process.env.REACT_APP_CHAIN === 'mainnet'
+    ? firstEventAddress
+    : firstEventAddressRinkeby;
+
+/**
  * Factory
  */
 // TODO: build per environment
-const FactoryAddressLinkeby = '0x2EE46278E7AFbA775000Fd818c02705e84c18795';
-export const FACTORY_CONTRACT_ADDRESS = FactoryAddressLinkeby;
+const FactoryAddressRinkeby = '0x2EE46278E7AFbA775000Fd818c02705e84c18795';
+export const FACTORY_CONTRACT_ADDRESS = FactoryAddressRinkeby;
 
 /**
  * Template
@@ -16,10 +26,10 @@ export const FACTORY_CONTRACT_ADDRESS = FactoryAddressLinkeby;
 export const templateNames = ['BulksaleV1.0.sol', 'BulksaleV2.sol'] as const;
 export type TemplateName = typeof templateNames[number];
 
-const TemplatesMapLinkeby: { [templateAddress: string]: TemplateName } = {
+const TemplatesMapRinkeby: { [templateAddress: string]: TemplateName } = {
   '0x7F251A6c7d6343ec0a46C14690920AA6C7C0d8a6': 'BulksaleV1.0.sol',
 };
-export const TemplatesMap = TemplatesMapLinkeby;
+export const TemplatesMap = TemplatesMapRinkeby;
 
 // ref: BulksaleFactory/contracts/BulksaleV1.sol
 export type BulksaleV1Args = {

@@ -4,21 +4,21 @@ import { CryptoCurrency, formatPrice } from '../../../utils/prices';
 
 type Props = {
   inputValue: number;
-  myTotalDonations: number;
-  totalProvidedToken: number;
-  totalDonations: number;
+  myTotalProvided: number;
+  totalProvided: number;
+  totalDistributeAmount: number;
+  distributedTokenSymbol: CryptoCurrency;
   providedTokenSymbol: CryptoCurrency;
-  donatedTokenSymbol: CryptoCurrency;
   isEnding: boolean;
 };
 
 const PersonalStatistics = ({
   inputValue,
-  myTotalDonations,
-  totalProvidedToken,
-  totalDonations,
+  myTotalProvided,
+  totalProvided,
+  totalDistributeAmount,
+  distributedTokenSymbol,
   providedTokenSymbol,
-  donatedTokenSymbol,
   isEnding,
 }: Props) => {
   const { active } = useWeb3React();
@@ -41,7 +41,7 @@ const PersonalStatistics = ({
       donations += inputtingValue;
     }
 
-    return (donations / totalDonations) * totalProvidedToken;
+    return (donations / totalProvided) * totalDistributeAmount;
   }
 
   return (
@@ -53,11 +53,11 @@ const PersonalStatistics = ({
             <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
               {active
                 ? formatPrice(
-                    getExpectedTxjpAmount(myTotalDonations, inputValue),
-                    providedTokenSymbol
+                    getExpectedTxjpAmount(myTotalProvided, inputValue),
+                    distributedTokenSymbol
                   )
                 : '????'}{' '}
-              {providedTokenSymbol.toUpperCase()}
+              {distributedTokenSymbol.toUpperCase()}
             </span>
           </p>
           {!isEnding ? (
@@ -65,14 +65,14 @@ const PersonalStatistics = ({
               現寄付
               <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
                 {active
-                  ? formatPrice(myTotalDonations, donatedTokenSymbol)
+                  ? formatPrice(myTotalProvided, providedTokenSymbol)
                   : '????'}{' '}
-                {donatedTokenSymbol.toUpperCase()}
+                {providedTokenSymbol.toUpperCase()}
               </span>{' '}
               + 新寄付
               <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                {active ? formatPrice(inputValue, donatedTokenSymbol) : '????'}{' '}
-                {donatedTokenSymbol.toUpperCase()}
+                {active ? formatPrice(inputValue, providedTokenSymbol) : '????'}{' '}
+                {providedTokenSymbol.toUpperCase()}
               </span>
             </p>
           ) : (
@@ -80,9 +80,9 @@ const PersonalStatistics = ({
               寄付
               <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
                 {active
-                  ? formatPrice(myTotalDonations, donatedTokenSymbol)
+                  ? formatPrice(myTotalProvided, providedTokenSymbol)
                   : '????'}{' '}
-                {donatedTokenSymbol.toUpperCase()}
+                {providedTokenSymbol.toUpperCase()}
               </span>
             </p>
           )}
