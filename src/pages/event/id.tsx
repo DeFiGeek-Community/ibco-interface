@@ -1,3 +1,5 @@
+import { getUnixTime } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
@@ -7,13 +9,13 @@ import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1'
 import Web3Status from '../../components/wallet-connect-button';
 import { templateNames, TemplatesMap } from '../../constants/contracts';
 
-// note: 初回イベント用の埋め込みマスターデータ
+// note: Master data for first event.
 export const masterDataForFirstEvent = {
   title: '[2021年7月の寄付イベント名]',
   organizer: 'Presented by DeFiGeek Community JAPAN',
   description: '説明説明説明',
-  donatedTokenSymbol: 'eth' as const, // 寄付するトークンのシンボル
-  providedTokenSymbol: 'txjp' as const, // 配布するトークンのシンボル
+  donatedTokenSymbol: 'eth' as const,
+  providedTokenSymbol: 'txjp' as const,
   fiatSymbol: 'jpy' as const,
   referenceList: {
     forum: 'https://gov.defigeek.xyz/',
@@ -24,18 +26,19 @@ export const masterDataForFirstEvent = {
   templateAddress: Object.keys(TemplatesMap)[0],
   logoUrl: '/favicon.ico',
 };
-// note: 開発中に用いるデータ。contractと繋げたら削除すること。
+// note: The states in contract. For development.
 export const mockData = {
   eventSummary: {
     ...masterDataForFirstEvent,
-    unixStartDate: Math.floor(new Date(2021, 6, 9, 12).getTime() / 1000), // 開始日時。unixTime形式
-    unixEndDate: Math.floor(new Date(2021, 6, 14, 23, 59).getTime() / 1000), // 終了日時。unixTime形式
-    totalProvidedTokens: 36000, // 配布トークン数
-    targetFigure: 1000, // 目標額
-    minTargetFigure: 100, // 最小到達額
+    unixStartDate: getUnixTime(
+      zonedTimeToUtc('2021-06-09 01:00', 'Asia/Tokyo')
+    ), // unixTime
+    unixEndDate: getUnixTime(zonedTimeToUtc('2021-07-13 23:59', 'Asia/Tokyo')), // unixTime
+    totalProvidedTokens: 36000, // TXJP
+    minTargetFigure: 1, // ETH
   },
-  totalDonations: 270.1234567891, // 全体の寄付総額
-  myTotalDonations: 1.8, // 当アカウントの寄付総額
+  totalDonations: 0, // ETH
+  myTotalDonations: 0, // ETH
 };
 
 export default function EventDetail() {
@@ -44,7 +47,7 @@ export default function EventDetail() {
   const [data, setData] = useState<any>({}); // TODO: 型
   const location = useLocation();
 
-  // Get the event ID from URL, and get event detail via wallet.
+  // Get the event ID from URL, and get event detail via web3.
   useEffect(() => {
     console.log('get contract address!', location.hash);
     // get the event ID and save it
@@ -53,7 +56,7 @@ export default function EventDetail() {
     setEventAddress(eventAddress);
     // check whether wallet connects
     // get template address
-    // TODO: etherscanからcontractAddessのバイナリを取得して、そこから取り出す
+    // TODO: get the binary from contractAddress via etherscan, and extract template contract address from it.
     setTemplateAddress(mockData.eventSummary.templateAddress);
     // get event detail
     setData(mockData);

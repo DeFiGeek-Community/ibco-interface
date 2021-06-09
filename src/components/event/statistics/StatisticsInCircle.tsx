@@ -11,29 +11,29 @@ import { ExternalLink } from '../../ExternalLink';
 
 type Props = {
   totalDonations: number;
-  targetFigure: number;
   minTargetFigure: number;
   donatedTokenSymbol: CryptoCurrency;
   fiatSymbol: FiatCurrency;
   fiatRate: number;
   contractAddress: string;
+  isStarting: boolean;
 };
 
 export default function StatisticsInCircle({
   totalDonations,
-  targetFigure,
   minTargetFigure,
   donatedTokenSymbol,
-  fiatRate,
   fiatSymbol,
+  fiatRate,
   contractAddress,
+  isStarting,
 }: Props) {
   const { active } = useWeb3React();
   // FIXME: replace mock
   const isLoading = false;
 
   function getTargetPercetage() {
-    return (totalDonations / targetFigure) * 100;
+    return (totalDonations / minTargetFigure) * 100;
   }
 
   function getFiatConversionAmount(token: number) {
@@ -53,41 +53,45 @@ export default function StatisticsInCircle({
             display: 'inline-block',
             position: 'absolute',
             top: 150,
-            left: 60,
+            left: 0,
             fontSize: '2rem',
+            textAlign: 'center',
+            width: '100%',
             zIndex: 100,
           }}
         >
-          <h3>Total Provided</h3>
+          <h3
+            style={{
+              fontSize: '2rem',
+            }}
+          >
+            Total Provided
+          </h3>
           {!isLoading ? (
             <>
-              <div>
-                {active
+              <div
+                style={{
+                  fontSize: '3.5rem',
+                }}
+              >
+                {isStarting && active
                   ? formatPrice(totalDonations, donatedTokenSymbol)
                   : '????'}{' '}
                 {donatedTokenSymbol.toUpperCase()}
               </div>
-              <div>
+              <div
+                style={{
+                  fontSize: '2rem',
+                }}
+              >
                 ¥
-                {active
+                {isStarting && active
                   ? formatPrice(
                       getFiatConversionAmount(totalDonations),
                       fiatSymbol
                     )
                   : '????'}
               </div>
-              {active && !!minTargetFigure ? (
-                <p
-                  style={{
-                    textAlign: 'center',
-                    fontSize: '1rem',
-                  }}
-                >
-                  最小到達額 {minTargetFigure}
-                  {donatedTokenSymbol.toUpperCase()}{' '}
-                  {totalDonations >= minTargetFigure ? 'を達成しました🎉' : ''}
-                </p>
-              ) : null}
             </>
           ) : (
             <Skeleton active paragraph={{ rows: 2 }}></Skeleton>

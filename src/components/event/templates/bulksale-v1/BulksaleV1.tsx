@@ -1,4 +1,5 @@
-import { Button, Form, Input } from 'antd';
+import { useWeb3React } from '@web3-react/core';
+import { Button, Form, Input, message } from 'antd';
 import { useState } from 'react';
 import useInterval from '../../../../hooks/useInterval';
 import { mockData } from '../../../../pages/event/id';
@@ -8,15 +9,18 @@ import {
 } from '../../../../utils/prices';
 import { H1, Description, Grid } from '../../../Layout';
 import CalendarInCircle from '../../countdown-calendar/CalendarInCircle';
+import PersonalStatistics from '../../statistics/PersonalStatistics';
 import StatisticsInCircle from '../../statistics/StatisticsInCircle';
-import PersonalStatistics from './PersonalStatistics';
 
 type Props = { data: typeof mockData };
 
 export default function BulksaleV1(props: Props) {
+  const { active } = useWeb3React();
   const [number, setNumber] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
-  // const { id } = useParams<{ id: string }>();
+
+  const isStarting = props.data.eventSummary.unixStartDate * 1000 <= Date.now();
+  const isEnding = props.data.eventSummary.unixEndDate * 1000 < Date.now();
 
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number(e.target.value || '0');
@@ -29,6 +33,11 @@ export default function BulksaleV1(props: Props) {
   };
 
   function onFinish(values: any) {
+    if (!active) {
+      message.error(`ウォレットを接続してください。`);
+      return;
+    }
+
     console.log('Received values from form: ', values);
   }
 
@@ -74,12 +83,12 @@ export default function BulksaleV1(props: Props) {
       <Grid>
         <StatisticsInCircle
           totalDonations={props.data.totalDonations}
-          targetFigure={props.data.eventSummary.targetFigure}
           minTargetFigure={props.data.eventSummary.minTargetFigure}
           donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
           fiatSymbol={props.data.eventSummary.fiatSymbol}
           fiatRate={fiatRate}
           contractAddress={props.data.eventSummary.contractAddress}
+          isStarting={isStarting}
         ></StatisticsInCircle>
 
         <CalendarInCircle
@@ -88,44 +97,49 @@ export default function BulksaleV1(props: Props) {
         ></CalendarInCircle>
       </Grid>
 
-      <Grid>
-        <Form
-          name="fundraiser_form_controls"
-          layout="inline"
-          onFinish={onFinish}
-        >
-          <Form.Item name="price" rules={[{ validator: checkPrice }]}>
-            <Input
-              type="text"
-              value={number}
-              onChange={onNumberChange}
-              style={{
-                width: '300px',
-                textAlign: 'right',
-                color: 'black',
-                backgroundColor: 'white',
-              }}
-            />
-          </Form.Item>
-          <Form.Item>
-            {props.data.eventSummary.donatedTokenSymbol.toUpperCase()}
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" shape="round" htmlType="submit">
-              寄付する
-            </Button>
-          </Form.Item>
-        </Form>
-      </Grid>
+      {isStarting && !isEnding && (
+        <Grid>
+          <Form
+            name="fundraiser_form_controls"
+            layout="inline"
+            onFinish={onFinish}
+          >
+            <Form.Item name="price" rules={[{ validator: checkPrice }]}>
+              <Input
+                type="text"
+                value={number}
+                onChange={onNumberChange}
+                style={{
+                  width: '300px',
+                  textAlign: 'right',
+                  color: 'black',
+                  backgroundColor: 'white',
+                }}
+              />
+            </Form.Item>
+            <Form.Item>
+              {props.data.eventSummary.donatedTokenSymbol.toUpperCase()}
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" shape="round" htmlType="submit">
+                寄付する
+              </Button>
+            </Form.Item>
+          </Form>
+        </Grid>
+      )}
 
-      <PersonalStatistics
-        inputValue={number}
-        myTotalDonations={props.data.myTotalDonations}
-        totalProvidedToken={props.data.eventSummary.totalProvidedTokens}
-        totalDonations={props.data.totalDonations}
-        providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
-        donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
-      ></PersonalStatistics>
+      {isStarting && (
+        <PersonalStatistics
+          inputValue={number}
+          myTotalDonations={props.data.myTotalDonations}
+          totalProvidedToken={props.data.eventSummary.totalProvidedTokens}
+          totalDonations={props.data.totalDonations}
+          providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
+          donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
+          isEnding={isEnding}
+        ></PersonalStatistics>
+      )}
     </>
   );
 }

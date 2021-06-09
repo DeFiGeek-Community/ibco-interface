@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
-import { CryptoCurrency, formatPrice } from '../../../../utils/prices';
+import { CryptoCurrency, formatPrice } from '../../../utils/prices';
 
 type Props = {
   inputValue: number;
@@ -9,6 +9,7 @@ type Props = {
   totalDonations: number;
   providedTokenSymbol: CryptoCurrency;
   donatedTokenSymbol: CryptoCurrency;
+  isEnding: boolean;
 };
 
 const PersonalStatistics = ({
@@ -18,6 +19,7 @@ const PersonalStatistics = ({
   totalDonations,
   providedTokenSymbol,
   donatedTokenSymbol,
+  isEnding,
 }: Props) => {
   const { active } = useWeb3React();
   // FIXME: replace mock
@@ -27,6 +29,10 @@ const PersonalStatistics = ({
     myTotalDonations: number,
     inputtingValue: number
   ) {
+    if (myTotalDonations <= 0) {
+      return 0;
+    }
+
     let donations = 0;
     if (!Number.isNaN(myTotalDonations)) {
       donations += myTotalDonations;
@@ -54,20 +60,32 @@ const PersonalStatistics = ({
               {providedTokenSymbol.toUpperCase()}
             </span>
           </p>
-          <p>
-            現寄付
-            <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {active
-                ? formatPrice(myTotalDonations, donatedTokenSymbol)
-                : '????'}{' '}
-              {donatedTokenSymbol.toUpperCase()}
-            </span>{' '}
-            + 新寄付
-            <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {active ? formatPrice(inputValue, donatedTokenSymbol) : '????'}{' '}
-              {donatedTokenSymbol.toUpperCase()}
-            </span>
-          </p>
+          {!isEnding ? (
+            <p>
+              現寄付
+              <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                {active
+                  ? formatPrice(myTotalDonations, donatedTokenSymbol)
+                  : '????'}{' '}
+                {donatedTokenSymbol.toUpperCase()}
+              </span>{' '}
+              + 新寄付
+              <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                {active ? formatPrice(inputValue, donatedTokenSymbol) : '????'}{' '}
+                {donatedTokenSymbol.toUpperCase()}
+              </span>
+            </p>
+          ) : (
+            <p>
+              寄付
+              <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                {active
+                  ? formatPrice(myTotalDonations, donatedTokenSymbol)
+                  : '????'}{' '}
+                {donatedTokenSymbol.toUpperCase()}
+              </span>
+            </p>
+          )}
         </>
       ) : (
         <Skeleton active />
