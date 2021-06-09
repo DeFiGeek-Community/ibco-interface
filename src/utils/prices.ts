@@ -12,7 +12,7 @@ export function formatPrice(value: number, currency?: CurrencyName) {
     if (currency === 'eth') {
       decimalDigits = 9;
     } else if (currency === 'txjp') {
-      decimalDigits = 9;
+      decimalDigits = 8;
     } else if (currency === 'jpy') {
       decimalDigits = 0;
     }

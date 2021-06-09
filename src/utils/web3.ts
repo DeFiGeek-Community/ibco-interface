@@ -20,6 +20,14 @@ export function shortenAddress(address: string, chars = 4): string {
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
 }
 
+export function parseEther(ether: string) {
+  return ethers.utils.parseEther(ether);
+}
+
+export function formatEther(wei: ethers.BigNumberish) {
+  return ethers.utils.formatEther(wei);
+}
+
 // ref: BulksaleFactory/test/index.test.ts
 export function getAbiArgs(templateName: string, args: BulksaleV1Args) {
   let types;
