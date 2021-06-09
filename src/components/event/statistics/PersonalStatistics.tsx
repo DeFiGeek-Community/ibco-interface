@@ -29,7 +29,7 @@ const PersonalStatistics = ({
     myTotalDonations: number,
     inputtingValue: number
   ) {
-    if (myTotalDonations <= 0) {
+    if (myTotalDonations + inputtingValue <= 0) {
       return 0;
     }
 
@@ -41,7 +41,9 @@ const PersonalStatistics = ({
       donations += inputtingValue;
     }
 
-    return (donations / totalProvided) * totalDistributeAmount;
+    const totalDonations = totalProvided + donations;
+
+    return (donations / totalDonations) * totalDistributeAmount;
   }
 
   return (
