@@ -32,16 +32,15 @@ const PersonalStatistics = ({
     if (myTotalDonations + inputtingValue <= 0) {
       return 0;
     }
-
-    let donations = 0;
-    if (!Number.isNaN(myTotalDonations)) {
-      donations += myTotalDonations;
+    if (Number.isNaN(myTotalDonations)) {
+      myTotalDonations = 0;
     }
-    if (!Number.isNaN(inputtingValue)) {
-      donations += inputtingValue;
+    if (Number.isNaN(inputtingValue)) {
+      inputtingValue = 0;
     }
 
-    const totalDonations = totalProvided + donations;
+    const donations = myTotalDonations + inputtingValue;
+    const totalDonations = totalProvided + inputtingValue;
 
     return (donations / totalDonations) * totalDistributeAmount;
   }

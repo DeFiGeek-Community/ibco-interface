@@ -1,11 +1,4 @@
-import {
-  ChainId,
-  Percent,
-  CurrencyAmount,
-  Currency,
-  Fraction,
-  Token,
-} from '@uniswap/sdk-core';
+import { ChainId } from '@uniswap/sdk-core';
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   1: '',

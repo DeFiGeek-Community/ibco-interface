@@ -21,7 +21,7 @@ export default function BulksaleV1(props: Props) {
   const { library, account, active } = useActiveWeb3React();
   const contract = useFirstEventContract();
 
-  const [number, setNumber] = useState(0);
+  const [inputNumber, setInputNumber] = useState(0);
   const [totalProvided, setTotalProvided] = useState(0);
   const [myTotalProvided, setMyTotalProvided] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
@@ -52,11 +52,10 @@ export default function BulksaleV1(props: Props) {
       donatedTokenName,
       props.data.eventSummary.fiatSymbol
     );
-    // coin geckoのデータの変更間隔は60秒毎っぽい
+    // The coin gecko seems to update its price every 60 seconds.
     fetch(oracleUrl)
       .then((response) => response.json())
       .then((body) => {
-        console.log('coin gecko', body);
         setFiatRate(body[donatedTokenName][props.data.eventSummary.fiatSymbol]);
       });
   }, 30000);
@@ -64,10 +63,10 @@ export default function BulksaleV1(props: Props) {
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number(e.target.value || '0');
     if (Number.isNaN(newNumber)) {
-      setNumber(0);
+      setInputNumber(0);
       return;
     }
-    setNumber(newNumber);
+    setInputNumber(newNumber);
   };
 
   async function onFinish(values: any) {
@@ -80,40 +79,61 @@ export default function BulksaleV1(props: Props) {
       return;
     }
 
-    const signer = library.getSigner();
     try {
-      signer
-        .sendTransaction({
-          to: contract.address,
-          value: parseEther(values.price),
-        })
-        .then((res: any) => {
-          console.log('donation result', res);
-          message.info(`作成しました！　${res}`);
-        })
-        .catch((error: any) => {
-          console.error('donation failed!', error);
-          if (
-            error.message &&
-            (error.message as string).search('The offering has not started yet')
-          ) {
-            message.warning(`まだ始まっていません。`);
-            return;
-          }
-          if (
-            error.message &&
-            (error.message as string).search('The offering has already ended')
-          ) {
-            message.warning(`終了しました。`);
-            return;
-          }
+      const signer = library.getSigner();
+      const res = await signer.sendTransaction({
+        to: contract.address,
+        value: parseEther(values.price),
+      });
 
-          message.warning(
-            `作成できませんでした。。　${error.message.substring(0, 20)}...`
-          );
-        });
+      console.log('donation result', res);
+      message.info(`寄付しました！　${res.hash}`);
     } catch (error) {
-      console.error('donation error!', error);
+      console.error('donation failed!', error);
+
+      if (
+        error.message &&
+        (error.message as string).search('The offering has not started')
+      ) {
+        message.warning(`まだ始まっていません。`);
+        return;
+      }
+      if (
+        error.message &&
+        (error.message as string).search('The offering has already ended')
+      ) {
+        message.warning(`終了しました。`);
+        return;
+      }
+
+      message.error(
+        `エラーが発生しました。。　${error.message.substring(0, 20)}...`
+      );
+    }
+  }
+
+  async function claim() {
+    if (!active || !account) {
+      message.error(`ウォレットを接続してください。`);
+      return;
+    }
+    if (!contract || !library) {
+      message.error(`ネットワークを${targetedChain}に接続してください。`);
+      return;
+    }
+    if (myTotalProvided <= 0) {
+      message.info(`あなた（${account}）の寄付額は0です。`);
+      return;
+    }
+
+    try {
+      const signer = contract.connect(library.getSigner());
+      const res = await signer.claim();
+
+      console.log('claim result', res);
+      message.info(`請求しました！　${res.hash}`);
+    } catch (error) {
+      console.error('claim error!', error);
       message.error(
         `エラーが発生しました。。　${error.message.substring(0, 20)}...`
       );
@@ -121,21 +141,26 @@ export default function BulksaleV1(props: Props) {
   }
 
   function checkPrice(_: any, value: number) {
-    if (number > 0) {
-      return Promise.resolve(value);
+    if (inputNumber <= 0) {
+      return Promise.reject('0以上を入力していください。');
     }
-    return Promise.reject('Price must be greater than zero!');
+    if (inputNumber < 0.000000000000000001) {
+      return Promise.reject('小数点は18桁までです。');
+    }
+
+    return Promise.resolve(value);
   }
 
   function getStatesFromContract() {
     if (active && contract && account) {
       contract.totalProvided().then((state) => {
-        console.log('get state of totalProvided', state.toNumber());
+        console.log('totalProvided', state.toNumber(), formatEther(state));
         setTotalProvided(Number(formatEther(state)));
       });
-      contract
-        .provided(account)
-        .then((state) => setMyTotalProvided(Number(formatEther(state))));
+      contract.provided(account).then((state) => {
+        console.log('myTotalProvided', state.toNumber(), formatEther(state));
+        setMyTotalProvided(Number(formatEther(state)));
+      });
     }
   }
 
@@ -177,7 +202,7 @@ export default function BulksaleV1(props: Props) {
             <Form.Item name="price" rules={[{ validator: checkPrice }]}>
               <Input
                 type="text"
-                value={number}
+                value={inputNumber}
                 onChange={onNumberChange}
                 style={{
                   width: '300px',
@@ -199,9 +224,22 @@ export default function BulksaleV1(props: Props) {
         </Grid>
       )}
 
+      {isEnding && (
+        <Grid>
+          <Button
+            type="primary"
+            shape="round"
+            htmlType="button"
+            onClick={claim}
+          >
+            請求する
+          </Button>
+        </Grid>
+      )}
+
       {isStarting && (
         <PersonalStatistics
-          inputValue={number}
+          inputValue={inputNumber}
           myTotalProvided={myTotalProvided}
           totalProvided={totalProvided}
           totalDistributeAmount={props.data.eventSummary.totalDistributeAmount}
