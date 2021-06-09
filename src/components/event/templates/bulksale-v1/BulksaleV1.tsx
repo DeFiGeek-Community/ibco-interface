@@ -1,7 +1,7 @@
-import { useWeb3React } from '@web3-react/core';
 import { Button, Form, Input, message } from 'antd';
 import { useState } from 'react';
 import useInterval from '../../../../hooks/useInterval';
+import { useActiveWeb3React } from '../../../../hooks/useWeb3';
 import { mockData } from '../../../../pages/event/id';
 import {
   getOracleUrlForFiatPriceOfToken,
@@ -15,8 +15,10 @@ import StatisticsInCircle from '../../statistics/StatisticsInCircle';
 type Props = { data: typeof mockData };
 
 export default function BulksaleV1(props: Props) {
-  const { active } = useWeb3React();
+  const { library, account, active } = useActiveWeb3React();
   const [number, setNumber] = useState(0);
+  const [totalProvided, setTotalProvided] = useState(0);
+  const [myTotalProvided, setMyTotalProvided] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
 
   const isStarting = props.data.eventSummary.unixStartDate * 1000 <= Date.now();
@@ -48,13 +50,14 @@ export default function BulksaleV1(props: Props) {
     return Promise.reject('Price must be greater than zero!');
   }
 
+  // get Fiat Rate.
   useInterval(() => {
-    if (!props.data.totalDonations) {
+    if (!totalProvided) {
       return;
     }
 
     const donatedTokenName = getTokenName(
-      props.data.eventSummary.donatedTokenSymbol
+      props.data.eventSummary.providedTokenSymbol
     );
     const oracleUrl = getOracleUrlForFiatPriceOfToken(
       donatedTokenName,
@@ -82,9 +85,9 @@ export default function BulksaleV1(props: Props) {
 
       <Grid>
         <StatisticsInCircle
-          totalDonations={props.data.totalDonations}
-          minTargetFigure={props.data.eventSummary.minTargetFigure}
-          donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
+          totalProvided={totalProvided}
+          minimalProvideAmount={props.data.eventSummary.minimalProvideAmount}
+          donatedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
           fiatSymbol={props.data.eventSummary.fiatSymbol}
           fiatRate={fiatRate}
           contractAddress={props.data.eventSummary.contractAddress}
@@ -118,7 +121,7 @@ export default function BulksaleV1(props: Props) {
               />
             </Form.Item>
             <Form.Item>
-              {props.data.eventSummary.donatedTokenSymbol.toUpperCase()}
+              {props.data.eventSummary.providedTokenSymbol.toUpperCase()}
             </Form.Item>
             <Form.Item>
               <Button type="primary" shape="round" htmlType="submit">
@@ -132,11 +135,13 @@ export default function BulksaleV1(props: Props) {
       {isStarting && (
         <PersonalStatistics
           inputValue={number}
-          myTotalDonations={props.data.myTotalDonations}
-          totalProvidedToken={props.data.eventSummary.totalProvidedTokens}
-          totalDonations={props.data.totalDonations}
+          myTotalProvided={myTotalProvided}
+          totalProvided={totalProvided}
+          totalDistributeAmount={props.data.eventSummary.totalDistributeAmount}
+          distributedTokenSymbol={
+            props.data.eventSummary.distributedTokenSymbol
+          }
           providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
-          donatedTokenSymbol={props.data.eventSummary.donatedTokenSymbol}
           isEnding={isEnding}
         ></PersonalStatistics>
       )}
