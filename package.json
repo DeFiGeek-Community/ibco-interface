@@ -24,6 +24,7 @@
     "antd": "^4.13.0",
     "big.js": "^6.1.1",
     "date-fns": "^2.19.0",
+    "date-fns-tz": "^1.1.4",
     "polished": "^4.1.2",
     "react": "^17.0.1",
     "react-device-detect": "^1.17.0",

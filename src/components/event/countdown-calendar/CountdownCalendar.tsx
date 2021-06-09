@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -17,14 +16,10 @@ const initialCountdown = {
 };
 
 export default function CountdownCalendar({ unixEndDate }: Props) {
-  const { active } = useWeb3React();
   const [countdown, setCountdown] = useState(initialCountdown);
 
-  // FIXME: replace mock
-  const isLoading = false;
-
   useInterval(() => {
-    if (!active || !unixEndDate) {
+    if (!unixEndDate) {
       setCountdown({ days: '?', hours: '?', mins: '?', secs: '?' });
       return;
     }
@@ -35,9 +30,11 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
 
   return (
     <div>
-      {active && !isLoading ? (
-        <p> {format(unixEndDate * 1000, 'yyyy年MM月dd日まで')}</p>
-      ) : null}
+      <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+        {' '}
+        {format(unixEndDate * 1000, 'yyyy年MM月dd日HH時mm分まで')}
+      </p>
+
       <CountdownPanel>
         <div className="countdown-value">{countdown.days}</div>
         <div className="countdown-unit">DAYS</div>
@@ -54,7 +51,7 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
         <div className="countdown-value">{countdown.secs}</div>
         <div className="countdown-unit">SECS</div>
       </CountdownPanel>
-      {active && unixEndDate * 1000 < Date.now() && (
+      {unixEndDate * 1000 < Date.now() && (
         <div
           style={{
             textAlign: 'center',

@@ -10,7 +10,7 @@ export const Container = styled.div`
 `;
 
 export const Main = styled.main`
-  padding: 5rem 0;
+  padding: 1rem 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -49,7 +49,7 @@ export const Grid = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   max-width: 1200px;
-  margin-top: 3rem;
+  margin: 1rem 0;
 
   @media (max-width: 600px) {
     width: 100%;
