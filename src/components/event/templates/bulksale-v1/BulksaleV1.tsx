@@ -1,7 +1,7 @@
 import { Button, Form, Input, message } from 'antd';
 import { useState } from 'react';
 import useInterval from '../../../../hooks/useInterval';
-import { useActiveWeb3React } from '../../../../hooks/useWeb3';
+import { getContract, useActiveWeb3React } from '../../../../hooks/useWeb3';
 import { mockData } from '../../../../pages/event/id';
 import {
   getOracleUrlForFiatPriceOfToken,
@@ -23,32 +23,6 @@ export default function BulksaleV1(props: Props) {
 
   const isStarting = props.data.eventSummary.unixStartDate * 1000 <= Date.now();
   const isEnding = props.data.eventSummary.unixEndDate * 1000 < Date.now();
-
-  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = Number(e.target.value || '0');
-    if (Number.isNaN(newNumber)) {
-      setNumber(0);
-      return;
-    }
-    console.log('セット', newNumber);
-    setNumber(newNumber);
-  };
-
-  function onFinish(values: any) {
-    if (!active) {
-      message.error(`ウォレットを接続してください。`);
-      return;
-    }
-
-    console.log('Received values from form: ', values);
-  }
-
-  function checkPrice(_: any, value: number) {
-    if (number > 0) {
-      return Promise.resolve(value);
-    }
-    return Promise.reject('Price must be greater than zero!');
-  }
 
   // get Fiat Rate.
   useInterval(() => {
@@ -72,6 +46,31 @@ export default function BulksaleV1(props: Props) {
       });
   }, 30000);
 
+  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNumber = Number(e.target.value || '0');
+    if (Number.isNaN(newNumber)) {
+      setNumber(0);
+      return;
+    }
+    setNumber(newNumber);
+  };
+
+  function onFinish(values: any) {
+    if (!active) {
+      message.error(`ウォレットを接続してください。`);
+      return;
+    }
+
+    console.log('Received values from form: ', values);
+  }
+
+  function checkPrice(_: any, value: number) {
+    if (number > 0) {
+      return Promise.resolve(value);
+    }
+    return Promise.reject('Price must be greater than zero!');
+  }
+
   return (
     <>
       <H1>{props.data.eventSummary.title}</H1>
@@ -87,7 +86,7 @@ export default function BulksaleV1(props: Props) {
         <StatisticsInCircle
           totalProvided={totalProvided}
           minimalProvideAmount={props.data.eventSummary.minimalProvideAmount}
-          donatedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
+          providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
           fiatSymbol={props.data.eventSummary.fiatSymbol}
           fiatRate={fiatRate}
           contractAddress={props.data.eventSummary.contractAddress}

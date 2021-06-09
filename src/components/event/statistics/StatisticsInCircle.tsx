@@ -12,7 +12,7 @@ import { ExternalLink } from '../../ExternalLink';
 type Props = {
   totalProvided: number;
   minimalProvideAmount: number;
-  donatedTokenSymbol: CryptoCurrency;
+  providedTokenSymbol: CryptoCurrency;
   fiatSymbol: FiatCurrency;
   fiatRate: number;
   contractAddress: string;
@@ -22,7 +22,7 @@ type Props = {
 export default function StatisticsInCircle({
   totalProvided,
   minimalProvideAmount,
-  donatedTokenSymbol,
+  providedTokenSymbol,
   fiatSymbol,
   fiatRate,
   contractAddress,
@@ -72,26 +72,43 @@ export default function StatisticsInCircle({
               <div
                 style={{
                   fontSize: '3.5rem',
+                  lineHeight: '3.5rem',
                 }}
               >
                 {isStarting && active
-                  ? formatPrice(totalProvided, donatedTokenSymbol)
+                  ? formatPrice(totalProvided, providedTokenSymbol)
                   : '????'}{' '}
-                {donatedTokenSymbol.toUpperCase()}
+                {providedTokenSymbol.toUpperCase()}
               </div>
-              <div
+              <span
                 style={{
                   fontSize: '2rem',
                 }}
               >
                 ¥
                 {isStarting && active
-                  ? formatPrice(
+                  ? '' +
+                    formatPrice(
                       getFiatConversionAmount(totalProvided),
                       fiatSymbol
                     )
                   : '????'}
-              </div>
+              </span>
+              {isStarting && active && !!minimalProvideAmount ? (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    fontSize: '1rem',
+                    marginTop: '10px',
+                  }}
+                >
+                  最小到達額 {minimalProvideAmount}
+                  {providedTokenSymbol.toUpperCase()}{' '}
+                  {totalProvided >= minimalProvideAmount
+                    ? 'を達成しました🎉'
+                    : ''}
+                </div>
+              ) : null}
             </>
           ) : (
             <Skeleton active paragraph={{ rows: 2 }}></Skeleton>
