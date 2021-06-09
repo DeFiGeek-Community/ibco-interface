@@ -81,7 +81,7 @@ export default function BulksaleV1(props: Props) {
 
     const signer = library.getSigner();
     try {
-      (signer as any)
+      signer
         .sendTransaction({
           to: contract.address,
           value: parseEther(values.price),
