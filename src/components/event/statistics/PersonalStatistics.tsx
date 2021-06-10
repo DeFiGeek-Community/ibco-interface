@@ -26,6 +26,17 @@ const PersonalStatistics = ({
   // FIXME: replace mock
   const isLoading = false;
 
+  const expectedAmount = formatPrice(
+    getExpectedTxjpAmount(myTotalProvided, inputValue),
+    distributedTokenSymbol
+  );
+  const sumOfProvidedAmount = formatPrice(
+    myTotalProvided + inputValue,
+    providedTokenSymbol
+  );
+  const fixedProvidedAmount = formatPrice(myTotalProvided, providedTokenSymbol);
+  const inputtingProvidedAmount = formatPrice(inputValue, providedTokenSymbol);
+
   function getExpectedTxjpAmount(
     myTotalDonations: number,
     inputtingValue: number
@@ -57,18 +68,10 @@ const PersonalStatistics = ({
           <p>
             獲得予定数:{' '}
             <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-              {active
-                ? formatPrice(
-                    getExpectedTxjpAmount(myTotalProvided, inputValue),
-                    distributedTokenSymbol
-                  ).value
-                : '????'}{' '}
+              {active ? expectedAmount.value : '????'}{' '}
               {distributedTokenSymbol.toUpperCase()}
             </span>
-            {formatPrice(
-              getExpectedTxjpAmount(myTotalProvided, inputValue),
-              distributedTokenSymbol
-            ).isZeroByRound && (
+            {expectedAmount.isZeroByRound && (
               <div
                 style={{ fontSize: '1rem', color: 'gray', marginLeft: '10px' }}
               >
@@ -78,30 +81,46 @@ const PersonalStatistics = ({
           </p>
           {!isEnding ? (
             <p>
-              現寄付
+              寄付合計:
               <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                {active
-                  ? formatPrice(myTotalProvided, providedTokenSymbol).value
-                  : '????'}{' '}
+                {active ? sumOfProvidedAmount.value : '????'}{' '}
                 {providedTokenSymbol.toUpperCase()}
               </span>{' '}
-              + 新寄付
+              （入力中
               <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                {active
-                  ? formatPrice(inputValue, providedTokenSymbol).value
-                  : '????'}{' '}
-                {providedTokenSymbol.toUpperCase()}
+                {active ? inputtingProvidedAmount.value : '????'}{' '}
+                {providedTokenSymbol.toUpperCase()}）
               </span>
+              {sumOfProvidedAmount.isZeroByRound && (
+                <div
+                  style={{
+                    fontSize: '1rem',
+                    color: 'gray',
+                    marginLeft: '10px',
+                  }}
+                >
+                  少なすぎて0になっています
+                </div>
+              )}
             </p>
           ) : (
             <p>
               寄付
               <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                {active
-                  ? formatPrice(myTotalProvided, providedTokenSymbol).value
-                  : '????'}{' '}
+                {active ? fixedProvidedAmount.value : '????'}{' '}
                 {providedTokenSymbol.toUpperCase()}
               </span>
+              {fixedProvidedAmount.isZeroByRound && (
+                <div
+                  style={{
+                    fontSize: '1rem',
+                    color: 'gray',
+                    marginLeft: '10px',
+                  }}
+                >
+                  少なすぎて0になっています
+                </div>
+              )}
             </p>
           )}
         </>

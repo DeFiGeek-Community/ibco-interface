@@ -50,7 +50,7 @@ export function divideToNum(
   return divide(v1, v2).toNumber();
 }
 
-export function getBigNumber(val: BigNumberValueType): Big {
+export function getBigNumber(val: BigNumberValueType | string): Big {
   if (val instanceof Big) {
     return val;
   }

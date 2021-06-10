@@ -1,4 +1,5 @@
 import { COINGECKO_URL } from '../constants/api';
+import { getBigNumber } from './bignumber';
 
 export type CryptoCurrency = 'eth' | 'txjp';
 export type FiatCurrency = 'jpy';
@@ -41,11 +42,23 @@ function isZeroByRound(value: string): boolean {
 }
 
 function format(value: string) {
-  const s = value.split('.');
+  let s = value.split('.');
+  if (s.length > 1) {
+    // eliminate unnecessary zero if it's not all zeros.
+    // `0.0100` -> `0.01`
+    // `0.0000` -> `0.0000` Don't chage!
+    if (!s[1].match(/^(0)\1*$/)) {
+      value = getBigNumber(value).toFixed();
+      s = value.split('.');
+    }
+  }
+
+  // add comma
   let ret = String(s[0]).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
   if (s.length > 1) {
     ret += '.' + s[1];
   }
+
   return ret;
 }
 
