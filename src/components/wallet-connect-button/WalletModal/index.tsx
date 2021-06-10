@@ -333,23 +333,9 @@ export default function WalletModal({ ENSName }: { ENSName?: string }) {
         )}
 
         <ContentWrapper>
-          <Card style={{ marginBottom: '16px' }}>
-            <Row style={{ flexWrap: 'nowrap' }}>
-              <p>
-                ウォレットを繋げると、以下に同意したことになります。{' '}
-                <div>
-                  <ExternalLink href="https://gov.defigeek.xyz/">
-                    利用規約
-                  </ExternalLink>
-                </div>
-                <div>
-                  <ExternalLink href="https://gov.defigeek.xyz/">
-                    免責事項
-                  </ExternalLink>
-                </div>
-              </p>
-            </Row>
-          </Card>
+          <Row style={{ flexWrap: 'nowrap', marginBottom: '16px' }}>
+            <span>ウォレットを選んでください。 </span>
+          </Row>
           {walletView === WALLET_VIEWS.PENDING ? (
             <PendingView
               connector={pendingWallet}
