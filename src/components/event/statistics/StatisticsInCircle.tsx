@@ -76,7 +76,7 @@ export default function StatisticsInCircle({
                 }}
               >
                 {isStarting && active
-                  ? formatPrice(totalProvided, providedTokenSymbol)
+                  ? formatPrice(totalProvided, providedTokenSymbol).value
                   : '????'}{' '}
                 {providedTokenSymbol.toUpperCase()}
               </div>
@@ -91,7 +91,7 @@ export default function StatisticsInCircle({
                     formatPrice(
                       getFiatConversionAmount(totalProvided),
                       fiatSymbol
-                    )
+                    ).value
                   : '????'}
               </span>
               {isStarting && active && !!minimalProvideAmount ? (
