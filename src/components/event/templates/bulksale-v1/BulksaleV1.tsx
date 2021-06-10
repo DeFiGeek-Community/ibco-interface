@@ -158,11 +158,11 @@ export default function BulksaleV1(props: Props) {
   function getStatesFromContract() {
     if (active && contract && account) {
       contract.totalProvided().then((state) => {
-        console.log('totalProvided', state, formatEther(state));
+        console.log('totalProvided', formatEther(state));
         setTotalProvided(Number(formatEther(state)));
       });
       contract.provided(account).then((state) => {
-        console.log('myTotalProvided', state, formatEther(state));
+        console.log('myTotalProvided', formatEther(state));
         setMyTotalProvided(Number(formatEther(state)));
       });
     }
