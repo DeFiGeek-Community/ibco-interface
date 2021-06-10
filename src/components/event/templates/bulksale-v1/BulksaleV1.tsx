@@ -20,8 +20,8 @@ type Props = { data: typeof mockData };
 export default function BulksaleV1(props: Props) {
   const { library, account, active } = useActiveWeb3React();
   const contract = useFirstEventContract();
+  const [form] = Form.useForm();
 
-  const [inputNumber, setInputNumber] = useState(0);
   const [totalProvided, setTotalProvided] = useState(0);
   const [myTotalProvided, setMyTotalProvided] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
@@ -60,15 +60,6 @@ export default function BulksaleV1(props: Props) {
       });
   }, 30000);
 
-  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = Number(e.target.value || '0');
-    if (Number.isNaN(newNumber)) {
-      setInputNumber(0);
-      return;
-    }
-    setInputNumber(newNumber);
-  };
-
   async function onFinish(values: any) {
     if (!active || !account) {
       message.error(`ウォレットを接続してください。`);
@@ -88,6 +79,8 @@ export default function BulksaleV1(props: Props) {
 
       console.log('donation result', res);
       message.info(`寄付しました！　${res.hash}`);
+
+      form.resetFields();
     } catch (error) {
       console.error('donation failed!', error);
 
@@ -140,15 +133,16 @@ export default function BulksaleV1(props: Props) {
     }
   }
 
-  function checkPrice(_: any, value: number) {
-    if (inputNumber <= 0) {
+  function checkPrice(_: any, value: string) {
+    const val = getInputValue(value);
+    if (val <= 0) {
       return Promise.reject('0以上を入力していください。');
     }
-    if (inputNumber < 0.000000000000000001) {
+    if (val < 0.000000000000000001) {
       return Promise.reject('小数点は18桁までです。');
     }
 
-    return Promise.resolve(value);
+    return Promise.resolve(val);
   }
 
   function getStatesFromContract() {
@@ -162,6 +156,20 @@ export default function BulksaleV1(props: Props) {
         setMyTotalProvided(Number(formatEther(state)));
       });
     }
+  }
+
+  function getInputValue(value: any): number {
+    const val = value ?? 0;
+    let newVal = 0;
+    try {
+      newVal = Number(val);
+      if (Number.isNaN(newVal)) {
+        newVal = 0;
+      }
+    } catch (error) {
+      newVal = 0;
+    }
+    return newVal;
   }
 
   return (
@@ -197,13 +205,12 @@ export default function BulksaleV1(props: Props) {
           <Form
             name="fundraiser_form_controls"
             layout="inline"
+            form={form}
             onFinish={onFinish}
           >
             <Form.Item name="price" rules={[{ validator: checkPrice }]}>
               <Input
                 type="text"
-                value={inputNumber}
-                onChange={onNumberChange}
                 style={{
                   width: '300px',
                   textAlign: 'right',
@@ -239,7 +246,7 @@ export default function BulksaleV1(props: Props) {
 
       {isStarting && (
         <PersonalStatistics
-          inputValue={inputNumber}
+          inputValue={getInputValue(form.getFieldValue('price'))}
           myTotalProvided={myTotalProvided}
           totalProvided={totalProvided}
           totalDistributeAmount={props.data.eventSummary.totalDistributeAmount}
