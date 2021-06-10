@@ -24,10 +24,10 @@ export function formatPrice(
     }
   }
 
-  const formattedValue = value.toFixed(decimalDigits);
+  const fixedValue = value.toFixed(decimalDigits);
   return {
-    value: formattedValue,
-    isZeroByRound: isZeroByRound(formattedValue),
+    value: format(fixedValue),
+    isZeroByRound: isZeroByRound(fixedValue),
   };
 }
 
@@ -38,6 +38,15 @@ function isZeroByRound(value: string): boolean {
   }
 
   return Number(numbers[1]) === 0;
+}
+
+function format(value: string) {
+  const s = value.split('.');
+  let ret = String(s[0]).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+  if (s.length > 1) {
+    ret += '.' + s[1];
+  }
+  return ret;
 }
 
 export function getFialSymbol(currency: FiatCurrency) {

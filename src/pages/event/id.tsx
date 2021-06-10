@@ -39,7 +39,7 @@ export const mockData = {
     ), // unixTime
     unixEndDate: getUnixTime(zonedTimeToUtc('2021-07-13 23:59', 'Asia/Tokyo')), // unixTime
     totalDistributeAmount: 36000, // TXJP
-    minimalProvideAmount: 100, // ETH
+    minimalProvideAmount: 300, // ETH
   },
   // totalProvided: 0, // ETH
   // myTotalProvided: 0, // ETH
