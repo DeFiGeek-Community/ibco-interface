@@ -71,7 +71,7 @@ export default function StatisticsInCircle({
             <>
               <div
                 style={{
-                  fontSize: '3.5rem',
+                  fontSize: '3rem',
                   lineHeight: '3.5rem',
                 }}
               >
@@ -102,8 +102,8 @@ export default function StatisticsInCircle({
                     marginTop: '10px',
                   }}
                 >
-                  最小到達額 {minimalProvideAmount}
-                  {providedTokenSymbol.toUpperCase()}{' '}
+                  目標 {minimalProvideAmount}
+                  {providedTokenSymbol.toUpperCase()} {' 以上'}
                   {totalProvided >= minimalProvideAmount
                     ? 'を達成しました🎉'
                     : ''}

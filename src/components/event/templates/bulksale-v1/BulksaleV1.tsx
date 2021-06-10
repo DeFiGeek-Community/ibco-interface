@@ -22,6 +22,7 @@ export default function BulksaleV1(props: Props) {
   const contract = useFirstEventContract();
   const [form] = Form.useForm();
 
+  const [copiedInputNumber, setCopiedInputNumber] = useState(0);
   const [totalProvided, setTotalProvided] = useState(0);
   const [myTotalProvided, setMyTotalProvided] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
@@ -83,20 +84,24 @@ export default function BulksaleV1(props: Props) {
       form.resetFields();
     } catch (error) {
       console.error('donation failed!', error);
-
-      if (
-        error.message &&
-        (error.message as string).search('The offering has not started')
-      ) {
-        message.warning(`まだ始まっていません。`);
-        return;
-      }
-      if (
-        error.message &&
-        (error.message as string).search('The offering has already ended')
-      ) {
-        message.warning(`終了しました。`);
-        return;
+      if (error.message) {
+        if (
+          (error.message as string).search('The offering has not started') > -1
+        ) {
+          message.warning(`まだ始まっていません。`);
+          return;
+        }
+        if (
+          (error.message as string).search('The offering has already ended') >
+          -1
+        ) {
+          message.warning(`終了しました。`);
+          return;
+        }
+        if ((error.message as string).search('insufficient funds') > -1) {
+          message.warning(`残高が足りません。`);
+          return;
+        }
       }
 
       message.error(
@@ -131,6 +136,11 @@ export default function BulksaleV1(props: Props) {
         `エラーが発生しました。。　${error.message.substring(0, 20)}...`
       );
     }
+  }
+
+  function copyInputValue(e: React.ChangeEvent<HTMLInputElement>) {
+    const newNumber = getInputValue(e.target.value);
+    setCopiedInputNumber(newNumber);
   }
 
   function checkPrice(_: any, value: string) {
@@ -217,6 +227,7 @@ export default function BulksaleV1(props: Props) {
                   color: 'black',
                   backgroundColor: 'white',
                 }}
+                onChange={copyInputValue}
               />
             </Form.Item>
             <Form.Item>
@@ -246,7 +257,7 @@ export default function BulksaleV1(props: Props) {
 
       {isStarting && (
         <PersonalStatistics
-          inputValue={getInputValue(form.getFieldValue('price'))}
+          inputValue={copiedInputNumber}
           myTotalProvided={myTotalProvided}
           totalProvided={totalProvided}
           totalDistributeAmount={props.data.eventSummary.totalDistributeAmount}
