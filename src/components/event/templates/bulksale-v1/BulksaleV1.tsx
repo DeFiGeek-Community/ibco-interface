@@ -1,6 +1,6 @@
 import { Button, Form, Input, message } from 'antd';
 import { useState } from 'react';
-import { targetedChain } from '../../../../constants/chains';
+import { targetedChain, targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
 import useInterval from '../../../../hooks/useInterval';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
@@ -18,7 +18,7 @@ import StatisticsInCircle from '../../statistics/StatisticsInCircle';
 type Props = { data: typeof mockData };
 
 export default function BulksaleV1(props: Props) {
-  const { library, account, active } = useActiveWeb3React();
+  const { library, account, active, chainId } = useActiveWeb3React();
   const contract = useFirstEventContract();
   const [form] = Form.useForm();
 
@@ -32,11 +32,16 @@ export default function BulksaleV1(props: Props) {
 
   // get Total Provided and Personal Donation.
   useInterval(() => {
-    if (!active) {
-      // use the graph.
+    if (!active || targetedChainId !== chainId) {
+      // use the graph per chain network
       return;
     }
-    getStatesFromContract();
+
+    try {
+      getStatesFromContract();
+    } catch (error) {
+      console.error(error);
+    }
   }, 5000);
 
   // get Fiat Rate.
@@ -62,11 +67,11 @@ export default function BulksaleV1(props: Props) {
   }, 30000);
 
   async function onFinish(values: any) {
-    if (!active || !account) {
+    if (!active || !account || !library) {
       message.error(`ウォレットを接続してください。`);
       return;
     }
-    if (!contract || !library) {
+    if (targetedChainId !== chainId || !contract) {
       message.error(`ネットワークを${targetedChain}に接続してください。`);
       return;
     }
@@ -111,11 +116,11 @@ export default function BulksaleV1(props: Props) {
   }
 
   async function claim() {
-    if (!active || !account) {
+    if (!active || !account || !library) {
       message.error(`ウォレットを接続してください。`);
       return;
     }
-    if (!contract || !library) {
+    if (targetedChainId !== chainId || !contract) {
       message.error(`ネットワークを${targetedChain}に接続してください。`);
       return;
     }
