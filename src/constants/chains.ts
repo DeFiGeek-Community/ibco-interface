@@ -8,8 +8,6 @@ export enum SupportedChainId {
   ARBITRUM_ONE = 42161,
 }
 
-export const targetedChain = process.env.REACT_APP_CHAIN;
-
 export const ChainIdMap = {
   1: 'MAINNET',
   3: 'ROPSTEN',
@@ -21,3 +19,7 @@ export const ChainIdMap = {
 } as const;
 export const ChainIds = Object.keys(ChainIdMap);
 export const ChainNames = Object.values(ChainIdMap);
+
+export const targetedChain = process.env.REACT_APP_CHAIN;
+export const targetedChainId =
+  targetedChain && SupportedChainId[targetedChain.toUpperCase() as any];
