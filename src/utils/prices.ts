@@ -1,5 +1,5 @@
 import { COINGECKO_URL } from '../constants/api';
-import { getBigNumber } from './bignumber';
+import { getBigNumber, multiplyToNum } from './bignumber';
 
 export type CryptoCurrency = 'eth' | 'txjp';
 export type FiatCurrency = 'jpy';
@@ -25,7 +25,9 @@ export function formatPrice(
     }
   }
 
-  const fixedValue = value.toFixed(decimalDigits);
+  const base = 10 ** decimalDigits;
+  const flooredValue = Math.floor(multiplyToNum(value, base)) / base;
+  const fixedValue = flooredValue.toFixed(decimalDigits); // to pad with zero to the right.
   return {
     value: format(fixedValue),
     isZeroByRound: isZeroByRound(fixedValue),
@@ -37,6 +39,9 @@ function isZeroByRound(value: string): boolean {
   if (!numbers[1]) {
     return false;
   }
+  if (Number(numbers[0]) > 0) {
+    return false;
+  }
 
   return Number(numbers[1]) === 0;
 }
@@ -46,15 +51,15 @@ function format(value: string) {
   if (s.length > 1) {
     // eliminate unnecessary zero if it's not all zeros.
     // `0.0100` -> `0.01`
-    // `0.0000` -> `0.0000` Don't chage!
-    if (!s[1].match(/^(0)\1*$/)) {
+    // `0.0000` -> `0.0000` Keep. Don't chage!
+    if (!(Number(s[0]) === 0 && s[1].match(/^(0)\1*$/))) {
       value = getBigNumber(value).toFixed();
       s = value.split('.');
     }
   }
 
   // add comma
-  let ret = String(s[0]).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+  let ret = s[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
   if (s.length > 1) {
     ret += '.' + s[1];
   }
