@@ -1,6 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
 import { Circle } from 'rc-progress';
+import styled from 'styled-components';
 import { ETHERSCAN_URL } from '../../../constants/api';
 import {
   CryptoCurrency,
@@ -8,6 +9,32 @@ import {
   formatPrice,
 } from '../../../utils/prices';
 import { ExternalLink } from '../../ExternalLink';
+
+const LeftCirclePosition = styled.div`
+  position: relative;
+  min-width: 500px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    min-width: 0;
+  }
+`;
+
+const InnerPosition = styled.span`
+  display: inline-block;
+  position: absolute;
+  top: 150px;
+  left: 0;
+  font-size: 2rem;
+  text-align: center;
+  width: 100%;
+  z-index: 100;
+
+  @media (max-width: 600px) {
+    top: 20%;
+    left: 0;
+  }
+`;
 
 type Props = {
   totalProvided: number;
@@ -41,25 +68,14 @@ export default function StatisticsInCircle({
   }
 
   return (
-    <div style={{ position: 'relative', minWidth: '500px' }}>
+    <LeftCirclePosition>
       <ExternalLink href={`${ETHERSCAN_URL}address/${contractAddress}`}>
         <Circle
           percent={getTargetPercetage()}
           strokeWidth={4}
           strokeColor="#D3D3D3"
         />
-        <span
-          style={{
-            display: 'inline-block',
-            position: 'absolute',
-            top: 150,
-            left: 0,
-            fontSize: '2rem',
-            textAlign: 'center',
-            width: '100%',
-            zIndex: 100,
-          }}
-        >
+        <InnerPosition>
           <h3
             style={{
               fontSize: '2rem',
@@ -113,8 +129,8 @@ export default function StatisticsInCircle({
           ) : (
             <Skeleton active paragraph={{ rows: 2 }}></Skeleton>
           )}
-        </span>
+        </InnerPosition>
       </ExternalLink>
-    </div>
+    </LeftCirclePosition>
   );
 }
