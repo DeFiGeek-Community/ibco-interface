@@ -7,7 +7,7 @@ type AddressMap = { [chainId: number]: string };
  * First Event
  */
 const firstEventAddress = '';
-const firstEventAddressRinkeby = '0x7abff03acB486E331634007e9e3E0F4A62927999';
+const firstEventAddressRinkeby = '0x7C570aA7e3BD78059FC5029540d338C89FEdc17e';
 export const FIRST_EVENT_CONTRACT_ADDRESS =
   process.env.REACT_APP_CHAIN === 'mainnet'
     ? firstEventAddress
