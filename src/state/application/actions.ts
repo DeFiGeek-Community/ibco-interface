@@ -19,11 +19,11 @@ export type PopupContent = {
 export enum ApplicationModal {
   WALLET,
   SETTINGS,
-  SELF_CLAIM,
-  ADDRESS_CLAIM,
-  CLAIM_POPUP,
+  // SELF_CLAIM,
+  // ADDRESS_CLAIM,
+  // CLAIM_POPUP,
   MENU,
-  DELEGATE,
+  // DELEGATE,
   // VOTE,
   // POOL_OVERVIEW_OPTIONS,
 }
@@ -43,3 +43,6 @@ export const addPopup = createAction<{
 export const removePopup = createAction<{ key: string }>(
   'application/removePopup'
 );
+
+export const startTx = createAction('application/startTx');
+export const endTx = createAction('application/endTx');

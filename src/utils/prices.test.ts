@@ -1,7 +1,7 @@
 import { formatPrice } from './prices';
 
 describe('formatPrice', () => {
-  describe('eth which is 9 digits', () => {
+  describe('eth which is 9 decimal point digits', () => {
     it('works for min value', () => {
       const oneWei = 0.000000000000000001;
       expect(formatPrice(oneWei, 'eth').value).toBe('0.000000000');
@@ -41,7 +41,7 @@ describe('formatPrice', () => {
     });
   });
 
-  describe('txjp which is 8 digits', () => {
+  describe('txjp which is 8 decimal point digits', () => {
     it('works for min value', () => {
       const minValue = 0.00000001;
       expect(formatPrice(minValue, 'txjp').value).toBe('0.00000001');
@@ -50,6 +50,23 @@ describe('formatPrice', () => {
     it('works to be floored if overflow', () => {
       const floored = 0.000000019;
       expect(formatPrice(floored, 'txjp').value).toBe('0.00000001');
+    });
+  });
+
+  describe('jpy which is 0 decimal point digits', () => {
+    it('works for min value', () => {
+      const minValue = 0.1;
+      expect(formatPrice(minValue, 'jpy').value).toBe('0');
+    });
+
+    it('works to be floored if overflow', () => {
+      const floored = 1.9;
+      expect(formatPrice(floored, 'jpy').value).toBe('1');
+    });
+
+    it('works for comma', () => {
+      const comma = 12345.6789;
+      expect(formatPrice(comma, 'jpy').value).toBe('12,345');
     });
   });
 

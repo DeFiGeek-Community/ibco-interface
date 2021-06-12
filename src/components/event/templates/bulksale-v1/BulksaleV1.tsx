@@ -5,6 +5,7 @@ import { useFirstEventContract } from '../../../../hooks/useContract';
 import useInterval from '../../../../hooks/useInterval';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
 import { mockData } from '../../../../pages/event/id';
+import { useEndTx, useStartTx } from '../../../../state/application/hooks';
 import {
   getOracleUrlForFiatPriceOfToken,
   getTokenName,
@@ -22,13 +23,17 @@ export default function BulksaleV1(props: Props) {
   const contract = useFirstEventContract();
   const [form] = Form.useForm();
 
+  // event info
   const [copiedInputNumber, setCopiedInputNumber] = useState(0);
   const [totalProvided, setTotalProvided] = useState(0);
   const [myTotalProvided, setMyTotalProvided] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
-
   const isStarting = props.data.eventSummary.unixStartDate * 1000 <= Date.now();
   const isEnding = props.data.eventSummary.unixEndDate * 1000 < Date.now();
+
+  // handle loading status
+  const startTx = useStartTx();
+  const endTx = useEndTx();
 
   // get Total Provided and Personal Donation.
   useInterval(() => {
@@ -77,6 +82,8 @@ export default function BulksaleV1(props: Props) {
     }
 
     try {
+      startTx();
+
       const signer = library.getSigner();
       const res = await signer.sendTransaction({
         to: contract.address,
@@ -112,6 +119,8 @@ export default function BulksaleV1(props: Props) {
       message.error(
         `エラーが発生しました。。　${error.message.substring(0, 20)}...`
       );
+    } finally {
+      endTx();
     }
   }
 
@@ -130,6 +139,8 @@ export default function BulksaleV1(props: Props) {
     }
 
     try {
+      startTx();
+
       const signer = contract.connect(library.getSigner());
       const res = await signer.claim();
 
@@ -140,6 +151,8 @@ export default function BulksaleV1(props: Props) {
       message.error(
         `エラーが発生しました。。　${error.message.substring(0, 20)}...`
       );
+    } finally {
+      endTx();
     }
   }
 

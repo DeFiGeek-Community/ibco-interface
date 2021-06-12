@@ -17,9 +17,13 @@ import {
 } from '../../connectors';
 import { NETWORK_CONTEXT_NAME } from '../../constants/web3';
 import useENSName from '../../hooks/useENSName';
-import { useWalletModalToggle } from '../../state/application/hooks';
+import {
+  usePendingTx,
+  useWalletModalToggle,
+} from '../../state/application/hooks';
 import { shortenAddress } from '../../utils/web3';
 // import PortisIcon from '../../..assets/images/portisIcon.png';
+import Loader from '../Loader';
 import Identicon from './Identicon';
 import WalletModal from './WalletModal';
 
@@ -156,7 +160,10 @@ function Web3StatusInner() {
   const { account, connector, error } = useWeb3React();
 
   const { ENSName } = useENSName(account ?? undefined);
+
   const toggleWalletModal = useWalletModalToggle();
+  const txCount = usePendingTx();
+  const hasPendingTransactions = txCount > 0;
 
   if (account) {
     return (
@@ -168,8 +175,18 @@ function Web3StatusInner() {
             alignItems: 'center',
           }}
         >
-          {connector && <StatusIcon connector={connector} />}
-          <Text>{ENSName || shortenAddress(account)}</Text>
+          {hasPendingTransactions ? (
+            <Row>
+              <Text>{txCount} Pending...</Text> <Loader />
+            </Row>
+          ) : (
+            <>
+              <Text>{ENSName || shortenAddress(account)}</Text>
+            </>
+          )}
+          {!hasPendingTransactions && connector && (
+            <StatusIcon connector={connector} />
+          )}
         </span>
       </AntButton>
     );

@@ -6,6 +6,8 @@ import {
   updateBlockNumber,
   ApplicationModal,
   setOpenModal,
+  startTx,
+  endTx,
 } from './actions';
 
 type PopupList = Array<{
@@ -19,12 +21,14 @@ export interface ApplicationState {
   readonly blockNumber: { readonly [chainId: number]: number };
   readonly popupList: PopupList;
   readonly openModal: ApplicationModal | null;
+  readonly txCount: number;
 }
 
 const initialState: ApplicationState = {
   blockNumber: {},
   popupList: [],
   openModal: null,
+  txCount: 0,
 };
 
 export default createReducer(initialState, (builder) =>
@@ -65,5 +69,11 @@ export default createReducer(initialState, (builder) =>
           p.show = false;
         }
       });
+    })
+    .addCase(startTx, (state) => {
+      state.txCount++;
+    })
+    .addCase(endTx, (state) => {
+      state.txCount--;
     })
 );
