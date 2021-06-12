@@ -3,6 +3,38 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import useInterval from '../../../hooks/useInterval';
 
+const CountdownPanel = styled.div`
+  background: white;
+  display: inline-block;
+  margin: 10px;
+  min-width: 100px;
+  padding: 20px 0;
+  text-align: center;
+
+  .countdown-value {
+    color: black;
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  .countdown-unit {
+    color: black;
+    text-transform: capitalize;
+  }
+
+  @media (max-width: 600px) {
+    min-width: 50px;
+  }
+`;
+
+const Statement = styled.p`
+  font-size: 1.5rem;
+  font-weight: bold;
+
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
+`;
+
 type Props = {
   unixEndDate: number;
 };
@@ -30,10 +62,10 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
 
   return (
     <div>
-      <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+      <Statement>
         {' '}
         {format(unixEndDate * 1000, 'yyyy年MM月dd日HH時mm分まで')}
-      </p>
+      </Statement>
 
       <CountdownPanel>
         <div className="countdown-value">{countdown.days}</div>
@@ -89,21 +121,3 @@ function getCountdown(duration: number): Countdown {
 
   return countdown;
 }
-
-const CountdownPanel = styled.div`
-  background: white;
-  display: inline-block;
-  margin: 10px;
-  min-width: 100px;
-  padding: 20px 0;
-  text-align: center;
-  .countdown-value {
-    color: black;
-    font-size: 2rem;
-    margin-bottom: 10px;
-  }
-  .countdown-unit {
-    color: black;
-    text-transform: capitalize;
-  }
-`;

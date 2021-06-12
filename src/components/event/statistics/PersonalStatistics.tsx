@@ -1,7 +1,17 @@
 import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
+import styled from 'styled-components';
 import { divide, multiplyToNum } from '../../../utils/bignumber';
 import { CryptoCurrency, formatPrice } from '../../../utils/prices';
+
+const Wrapper = styled.div`
+  margin-top: 40px;
+  font-size: 2rem;
+
+  @media (max-width: 600px) {
+    font-size: 1.2rem;
+  }
+`;
 
 type Props = {
   inputValue: number;
@@ -62,7 +72,7 @@ const PersonalStatistics = ({
   }
 
   return (
-    <div style={{ marginTop: '40px', fontSize: '2em' }}>
+    <Wrapper>
       {!isLoading ? (
         <>
           <p>
@@ -127,7 +137,7 @@ const PersonalStatistics = ({
       ) : (
         <Skeleton active />
       )}
-    </div>
+    </Wrapper>
   );
 };
 

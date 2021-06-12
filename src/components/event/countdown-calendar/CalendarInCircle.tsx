@@ -1,6 +1,31 @@
 import { format } from 'date-fns';
 import { Circle } from 'rc-progress';
+import styled from 'styled-components';
 import CountdownCalendar from './CountdownCalendar';
+
+const RightCirclePosition = styled.div`
+  position: relative;
+  min-width: 600px;
+  margin-left: 50px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+  }
+`;
+
+const InnerPosition = styled.span`
+  display: inline-block;
+  position: absolute;
+  top: 200px;
+  left: 50px;
+
+  @media (max-width: 600px) {
+    top: 25%;
+    left: 10%;
+  }
+`;
 
 type Props = {
   unixStartDate: number;
@@ -19,13 +44,7 @@ export default function CalendarInCircle({
   }
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        minWidth: '600px',
-        marginLeft: '50px',
-      }}
-    >
+    <RightCirclePosition>
       <Circle
         percent={getRestTermPercetage()}
         strokeWidth={4}
@@ -46,17 +65,10 @@ export default function CalendarInCircle({
           {format(unixStartDate * 1000, 'yyyy年MM月dd日HH時mm分より開始！')}
         </span>
       ) : (
-        <span
-          style={{
-            display: 'inline-block',
-            position: 'absolute',
-            top: 200,
-            left: 50,
-          }}
-        >
+        <InnerPosition>
           <CountdownCalendar unixEndDate={unixEndDate}></CountdownCalendar>
-        </span>
+        </InnerPosition>
       )}
-    </div>
+    </RightCirclePosition>
   );
 }

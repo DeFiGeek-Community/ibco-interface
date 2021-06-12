@@ -16,6 +16,7 @@ export const Main = styled.main`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 
 export const H1 = styled.h1`
@@ -23,6 +24,12 @@ export const H1 = styled.h1`
   line-height: 1.15;
   font-size: 4rem;
   text-align: center;
+
+  @media (max-width: 600px){
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+}
 
   a {
     color: #0070f3;
@@ -40,6 +47,10 @@ export const Description = styled.p`
   text-align: center;
   line-height: 1.5;
   font-size: 1.5rem;
+
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
 `;
 
 export const Grid = styled.div`
@@ -54,6 +65,7 @@ export const Grid = styled.div`
   @media (max-width: 600px) {
     width: 100%;
     flex-direction: column;
+    flex-wrap: nowrap;
   }
 `;
 

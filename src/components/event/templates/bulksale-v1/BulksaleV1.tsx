@@ -1,5 +1,6 @@
 import { Button, Form, Input, message } from 'antd';
 import { useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { targetedChain, targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
 import useInterval from '../../../../hooks/useInterval';
@@ -240,7 +241,7 @@ export default function BulksaleV1(props: Props) {
               <Input
                 type="text"
                 style={{
-                  width: '300px',
+                  width: !isMobile ? '300px' : '100%',
                   textAlign: 'right',
                   color: 'black',
                   backgroundColor: 'white',
