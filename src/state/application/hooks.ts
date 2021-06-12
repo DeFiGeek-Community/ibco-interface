@@ -5,9 +5,11 @@ import { AppDispatch, AppState } from '../index';
 import {
   addPopup,
   ApplicationModal,
+  endTx,
   PopupContent,
   removePopup,
   setOpenModal,
+  startTx,
 } from './actions';
 
 export function useBlockNumber(): number | undefined {
@@ -53,21 +55,21 @@ export function useToggleSettingsMenu(): () => void {
   return useToggleModal(ApplicationModal.SETTINGS);
 }
 
-export function useShowClaimPopup(): boolean {
-  return useModalOpen(ApplicationModal.CLAIM_POPUP);
-}
+// export function useShowClaimPopup(): boolean {
+//   return useModalOpen(ApplicationModal.CLAIM_POPUP);
+// }
 
-export function useToggleShowClaimPopup(): () => void {
-  return useToggleModal(ApplicationModal.CLAIM_POPUP);
-}
+// export function useToggleShowClaimPopup(): () => void {
+//   return useToggleModal(ApplicationModal.CLAIM_POPUP);
+// }
 
-export function useToggleSelfClaimModal(): () => void {
-  return useToggleModal(ApplicationModal.SELF_CLAIM);
-}
+// export function useToggleSelfClaimModal(): () => void {
+//   return useToggleModal(ApplicationModal.SELF_CLAIM);
+// }
 
-export function useToggleDelegateModal(): () => void {
-  return useToggleModal(ApplicationModal.DELEGATE);
-}
+// export function useToggleDelegateModal(): () => void {
+//   return useToggleModal(ApplicationModal.DELEGATE);
+// }
 
 // export function useToggleVoteModal(): () => void {
 //   return useToggleModal(ApplicationModal.VOTE);
@@ -100,4 +102,19 @@ export function useRemovePopup(): (key: string) => void {
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useSelector((state: AppState) => state.application.popupList);
   return useMemo(() => list.filter((item) => item.show), [list]);
+}
+
+export function usePendingTx(): number {
+  const txCount = useSelector((state: AppState) => state.application.txCount);
+  return txCount;
+}
+
+export function useStartTx(): () => void {
+  const dispatch = useDispatch<AppDispatch>();
+  return useCallback(() => dispatch(startTx()), [dispatch]);
+}
+
+export function useEndTx(): () => void {
+  const dispatch = useDispatch<AppDispatch>();
+  return useCallback(() => dispatch(endTx()), [dispatch]);
 }

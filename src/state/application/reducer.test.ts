@@ -3,8 +3,10 @@ import { createStore, Store } from 'redux';
 import {
   addPopup,
   ApplicationModal,
+  endTx,
   removePopup,
   setOpenModal,
+  startTx,
   updateBlockNumber,
 } from './actions';
 import reducer, { ApplicationState } from './reducer';
@@ -19,6 +21,7 @@ describe('application reducer', () => {
         [ChainId.MAINNET]: 3,
       },
       openModal: null,
+      txCount: 0,
     });
   });
 
@@ -69,8 +72,8 @@ describe('application reducer', () => {
       expect(store.getState().openModal).toEqual(ApplicationModal.WALLET);
       store.dispatch(setOpenModal(ApplicationModal.WALLET));
       expect(store.getState().openModal).toEqual(ApplicationModal.WALLET);
-      store.dispatch(setOpenModal(ApplicationModal.CLAIM_POPUP));
-      expect(store.getState().openModal).toEqual(ApplicationModal.CLAIM_POPUP);
+      // store.dispatch(setOpenModal(ApplicationModal.CLAIM_POPUP));
+      // expect(store.getState().openModal).toEqual(ApplicationModal.CLAIM_POPUP);
       store.dispatch(setOpenModal(null));
       expect(store.getState().openModal).toEqual(null);
     });
@@ -114,6 +117,22 @@ describe('application reducer', () => {
       store.dispatch(removePopup({ key: 'abc' }));
       expect(store.getState().popupList).toHaveLength(1);
       expect(store.getState().popupList[0].show).toBe(false);
+    });
+  });
+
+  describe('startTx', () => {
+    it('plus 1', () => {
+      expect(store.getState().txCount).toBe(0);
+      store.dispatch(startTx());
+      expect(store.getState().txCount).toBe(1);
+    });
+  });
+
+  describe('endTx', () => {
+    it('minus 1', () => {
+      expect(store.getState().txCount).toBe(0);
+      store.dispatch(endTx());
+      expect(store.getState().txCount).toBe(-1);
     });
   });
 });
