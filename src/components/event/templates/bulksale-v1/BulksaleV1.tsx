@@ -94,7 +94,9 @@ export default function BulksaleV1(props: Props) {
       console.log('donation result', res);
       message.info(`寄付しました！　${res.hash}`);
 
+      // reset
       form.resetFields();
+      setCopiedInputNumber(0);
     } catch (error) {
       console.error('donation failed!', error);
       if (error.message) {
