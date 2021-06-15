@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, notification } from 'antd';
 import { useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { targetedChain, targetedChainId } from '../../../../constants/chains';
@@ -7,6 +7,7 @@ import useInterval from '../../../../hooks/useInterval';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
 import { mockData } from '../../../../pages/event/id';
 import { useEndTx, useStartTx } from '../../../../state/application/hooks';
+import { getEtherscanLink } from '../../../../utils/externalLink';
 import {
   getOracleUrlForFiatPriceOfToken,
   getTokenName,
@@ -92,7 +93,16 @@ export default function BulksaleV1(props: Props) {
       });
 
       console.log('donation result', res);
-      message.info(`寄付しました！　${res.hash}`);
+      notification.success({
+        message: '寄付しました！',
+        description: `${res.hash} 寄付額への反映は数confirmation後になります。`,
+        onClick: () => {
+          window.open(
+            getEtherscanLink(chainId!, res.hash, 'address'),
+            '_blank'
+          );
+        },
+      });
 
       // reset
       form.resetFields();
@@ -103,24 +113,25 @@ export default function BulksaleV1(props: Props) {
         if (
           (error.message as string).search('The offering has not started') > -1
         ) {
-          message.warning(`まだ始まっていません。`);
+          message.warning(`まだ始まっていません。`, 5);
           return;
         }
         if (
           (error.message as string).search('The offering has already ended') >
           -1
         ) {
-          message.warning(`終了しました。`);
+          message.warning(`終了しました。`, 5);
           return;
         }
         if ((error.message as string).search('insufficient funds') > -1) {
-          message.warning(`残高が足りません。`);
+          message.warning(`残高が足りません。`, 5);
           return;
         }
       }
 
       message.error(
-        `エラーが発生しました。。　${error.message.substring(0, 20)}...`
+        `エラーが発生しました。。　${error.message.substring(0, 20)}...`,
+        5
       );
     } finally {
       endTx();
@@ -129,15 +140,15 @@ export default function BulksaleV1(props: Props) {
 
   async function claim() {
     if (!active || !account || !library) {
-      message.error(`ウォレットを接続してください。`);
+      message.error(`ウォレットを接続してください。`, 5);
       return;
     }
     if (targetedChainId !== chainId || !contract) {
-      message.error(`ネットワークを${targetedChain}に接続してください。`);
+      message.error(`ネットワークを${targetedChain}に接続してください。`, 5);
       return;
     }
     if (myTotalProvided <= 0) {
-      message.info(`あなた（${account}）の寄付額は0です。`);
+      message.info(`あなた（${account}）の寄付額は0です。`, 5);
       return;
     }
 
@@ -148,11 +159,21 @@ export default function BulksaleV1(props: Props) {
       const res = await signer.claim();
 
       console.log('claim result', res);
-      message.info(`請求しました！　${res.hash}`);
+      notification.success({
+        message: '請求しました！　',
+        description: `${res.hash}`,
+        onClick: () => {
+          window.open(
+            getEtherscanLink(chainId!, res.hash, 'address'),
+            '_blank'
+          );
+        },
+      });
     } catch (error) {
       console.error('claim error!', error);
       message.error(
-        `エラーが発生しました。。　${error.message.substring(0, 20)}...`
+        `エラーが発生しました。。　${error.message.substring(0, 20)}...`,
+        5
       );
     } finally {
       endTx();

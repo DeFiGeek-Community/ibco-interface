@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
 import { Circle } from 'rc-progress';
 import styled from 'styled-components';
-import { ETHERSCAN_URL } from '../../../constants/api';
+import { getEtherscanLink } from '../../../utils/externalLink';
 import {
   CryptoCurrency,
   FiatCurrency,
@@ -55,7 +55,7 @@ export default function StatisticsInCircle({
   contractAddress,
   isStarting,
 }: Props) {
-  const { active } = useWeb3React();
+  const { active, chainId } = useWeb3React();
   // FIXME: replace mock
   const isLoading = false;
 
@@ -69,7 +69,9 @@ export default function StatisticsInCircle({
 
   return (
     <LeftCirclePosition>
-      <ExternalLink href={`${ETHERSCAN_URL}address/${contractAddress}`}>
+      <ExternalLink
+        href={getEtherscanLink(chainId!, contractAddress, 'address')}
+      >
         <Circle
           percent={getTargetPercetage()}
           strokeWidth={4}
