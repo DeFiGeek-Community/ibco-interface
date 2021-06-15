@@ -35,11 +35,11 @@ export const mockData = {
   eventSummary: {
     ...masterDataForFirstEvent,
     unixStartDate: getUnixTime(
-      zonedTimeToUtc('2021-06-09 12:00', 'Asia/Tokyo')
+      zonedTimeToUtc('2021-06-15 12:00', 'Asia/Tokyo')
     ), // unixTime
-    unixEndDate: getUnixTime(zonedTimeToUtc('2021-06-14 21:00', 'Asia/Tokyo')), // unixTime
+    unixEndDate: getUnixTime(zonedTimeToUtc('2021-06-17 21:00', 'Asia/Tokyo')), // unixTime
     totalDistributeAmount: 36000, // TXJP
-    minimalProvideAmount: 300, // ETH
+    minimalProvideAmount: 1, // ETH
   },
   // totalProvided: 0, // ETH
   // myTotalProvided: 0, // ETH
