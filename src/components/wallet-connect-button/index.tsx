@@ -15,6 +15,7 @@ import {
   // walletconnect,
   // walletlink,
 } from '../../connectors';
+import { NETWORK_LABELS } from '../../constants/chains';
 import { NETWORK_CONTEXT_NAME } from '../../constants/web3';
 import useENSName from '../../hooks/useENSName';
 import {
@@ -157,7 +158,7 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
 }
 
 function Web3StatusInner() {
-  const { account, connector, error } = useWeb3React();
+  const { account, connector, chainId, error } = useWeb3React();
 
   const { ENSName } = useENSName(account ?? undefined);
 
@@ -167,28 +168,35 @@ function Web3StatusInner() {
 
   if (account) {
     return (
-      <AntButton id="web3-status-connected" onClick={toggleWalletModal}>
-        <span
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          {hasPendingTransactions ? (
-            <Row>
-              <Text>{txCount} Pending...</Text> <Loader />
-            </Row>
-          ) : (
-            <>
-              <Text>{ENSName || shortenAddress(account)}</Text>
-            </>
-          )}
-          {!hasPendingTransactions && connector && (
-            <StatusIcon connector={connector} />
-          )}
-        </span>
-      </AntButton>
+      <>
+        {chainId && chainId !== 1 && (
+          <span style={{ color: 'orange', marginRight: '10px' }}>
+            {NETWORK_LABELS[chainId]}
+          </span>
+        )}
+        <AntButton id="web3-status-connected" onClick={toggleWalletModal}>
+          <span
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {hasPendingTransactions ? (
+              <Row>
+                <Text>{txCount} Pending...</Text> <Loader />
+              </Row>
+            ) : (
+              <>
+                <Text>{ENSName || shortenAddress(account)}</Text>
+              </>
+            )}
+            {!hasPendingTransactions && connector && (
+              <StatusIcon connector={connector} />
+            )}
+          </span>
+        </AntButton>
+      </>
     );
   } else if (error) {
     return (
