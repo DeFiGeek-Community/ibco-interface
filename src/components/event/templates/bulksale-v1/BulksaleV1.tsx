@@ -238,7 +238,7 @@ export default function BulksaleV1(props: Props) {
       <Grid>
         <StatisticsInCircle
           totalProvided={totalProvided}
-          minimalProvideAmount={props.data.eventSummary.minimalProvideAmount}
+          goalAmount={props.data.eventSummary.goalAmount}
           providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
           fiatSymbol={props.data.eventSummary.fiatSymbol}
           fiatRate={fiatRate}
