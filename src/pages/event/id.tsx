@@ -18,7 +18,7 @@ export const masterDataForFirstEvent = {
   title: '[2021年7月の寄付イベント名]',
   organizer: 'Presented by DeFiGeek Community JAPAN',
   description: '説明説明説明',
-  goalAmount: 300, // ETH
+  goalAmount: 1, // ETH
   providedTokenSymbol: 'eth' as const,
   distributedTokenSymbol: 'txjp' as const,
   fiatSymbol: 'jpy' as const,
@@ -36,9 +36,9 @@ export const mockData = {
   eventSummary: {
     ...masterDataForFirstEvent,
     unixStartDate: getUnixTime(
-      zonedTimeToUtc('2021-06-09 12:00', 'Asia/Tokyo')
+      zonedTimeToUtc('2021-06-15 12:00', 'Asia/Tokyo')
     ), // unixTime
-    unixEndDate: getUnixTime(zonedTimeToUtc('2021-07-14 21:00', 'Asia/Tokyo')), // unixTime
+    unixEndDate: getUnixTime(zonedTimeToUtc('2021-06-17 21:00', 'Asia/Tokyo')), // unixTime
     totalDistributeAmount: 36000, // TXJP
   },
   // totalProvided: 0, // ETH
