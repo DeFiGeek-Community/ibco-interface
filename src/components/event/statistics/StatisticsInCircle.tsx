@@ -60,6 +60,9 @@ export default function StatisticsInCircle({
   const isLoading = false;
 
   function getTargetPercetage() {
+    if (goalAmount <= 0) {
+      return 0;
+    }
     return (totalProvided / goalAmount) * 100;
   }
 

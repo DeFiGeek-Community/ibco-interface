@@ -51,18 +51,21 @@ const PersonalStatistics = ({
     myTotalDonations: number,
     inputtingValue: number
   ) {
-    if (myTotalDonations + inputtingValue <= 0) {
-      return 0;
-    }
     if (Number.isNaN(myTotalDonations)) {
       myTotalDonations = 0;
     }
     if (Number.isNaN(inputtingValue)) {
       inputtingValue = 0;
     }
+    if (Number.isNaN(totalProvided)) {
+      totalProvided = 0;
+    }
 
     const donations = myTotalDonations + inputtingValue;
     const totalDonations = totalProvided + inputtingValue;
+    if (totalDonations <= 0) {
+      return 0;
+    }
 
     const amount = multiplyToNum(
       divide(donations, totalDonations),
