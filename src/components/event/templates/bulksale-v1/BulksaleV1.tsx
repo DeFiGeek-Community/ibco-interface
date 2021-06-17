@@ -13,6 +13,7 @@ import {
   getTokenName,
 } from '../../../../utils/prices';
 import { formatEther, parseEther } from '../../../../utils/web3';
+import { ExternalLink } from '../../../ExternalLink';
 import { H1, Description, Grid } from '../../../Layout';
 import CalendarInCircle from '../../countdown-calendar/CalendarInCircle';
 import PersonalStatistics from '../../statistics/PersonalStatistics';
@@ -95,10 +96,15 @@ export default function BulksaleV1(props: Props) {
       console.log('donation result', res);
       notification.success({
         message: '寄付しました！',
-        description: `${res.hash} 寄付額への反映は数confirmation後になります。`,
+        description: (
+          <>
+            <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
+            <p>寄付額への反映は数confirmation後になります。</p>
+          </>
+        ),
         onClick: () => {
           window.open(
-            getEtherscanLink(chainId!, res.hash, 'address'),
+            getEtherscanLink(chainId!, res.hash, 'transaction'),
             '_blank'
           );
         },
@@ -161,10 +167,14 @@ export default function BulksaleV1(props: Props) {
       console.log('claim result', res);
       notification.success({
         message: '請求しました！　',
-        description: `${res.hash}`,
+        description: (
+          <>
+            <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
+          </>
+        ),
         onClick: () => {
           window.open(
-            getEtherscanLink(chainId!, res.hash, 'address'),
+            getEtherscanLink(chainId!, res.hash, 'transaction'),
             '_blank'
           );
         },
