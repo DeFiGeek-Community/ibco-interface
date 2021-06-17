@@ -129,10 +129,10 @@ export default function BulksaleV1(props: Props) {
         }
       }
 
-      message.error(
-        `エラーが発生しました。。　${error.message.substring(0, 20)}...`,
-        5
-      );
+      notification.error({
+        message: 'エラーが発生しました。。',
+        description: error.messages,
+      });
     } finally {
       endTx();
     }
@@ -171,10 +171,10 @@ export default function BulksaleV1(props: Props) {
       });
     } catch (error) {
       console.error('claim error!', error);
-      message.error(
-        `エラーが発生しました。。　${error.message.substring(0, 20)}...`,
-        5
-      );
+      notification.error({
+        message: 'エラーが発生しました。。',
+        description: error.messages,
+      });
     } finally {
       endTx();
     }
@@ -238,7 +238,7 @@ export default function BulksaleV1(props: Props) {
       <Grid>
         <StatisticsInCircle
           totalProvided={totalProvided}
-          minimalProvideAmount={props.data.eventSummary.minimalProvideAmount}
+          goalAmount={props.data.eventSummary.goalAmount}
           providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
           fiatSymbol={props.data.eventSummary.fiatSymbol}
           fiatRate={fiatRate}
