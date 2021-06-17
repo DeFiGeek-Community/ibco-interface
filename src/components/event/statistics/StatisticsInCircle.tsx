@@ -38,7 +38,7 @@ const InnerPosition = styled.span`
 
 type Props = {
   totalProvided: number;
-  minimalProvideAmount: number;
+  goalAmount: number;
   providedTokenSymbol: CryptoCurrency;
   fiatSymbol: FiatCurrency;
   fiatRate: number;
@@ -48,7 +48,7 @@ type Props = {
 
 export default function StatisticsInCircle({
   totalProvided,
-  minimalProvideAmount,
+  goalAmount,
   providedTokenSymbol,
   fiatSymbol,
   fiatRate,
@@ -60,7 +60,7 @@ export default function StatisticsInCircle({
   const isLoading = false;
 
   function getTargetPercetage() {
-    return (totalProvided / minimalProvideAmount) * 100;
+    return (totalProvided / goalAmount) * 100;
   }
 
   function getFiatConversionAmount(token: number) {
@@ -112,7 +112,7 @@ export default function StatisticsInCircle({
                     ).value
                   : '????'}
               </span>
-              {isStarting && active && !!minimalProvideAmount ? (
+              {isStarting && active && !!goalAmount ? (
                 <div
                   style={{
                     textAlign: 'center',
@@ -120,11 +120,9 @@ export default function StatisticsInCircle({
                     marginTop: '10px',
                   }}
                 >
-                  目標 {minimalProvideAmount}
+                  目標 {goalAmount}
                   {providedTokenSymbol.toUpperCase()} {' 以上'}
-                  {totalProvided >= minimalProvideAmount
-                    ? 'を達成しました🎉'
-                    : ''}
+                  {totalProvided >= goalAmount ? 'を達成しました🎉' : ''}
                 </div>
               ) : null}
             </>
