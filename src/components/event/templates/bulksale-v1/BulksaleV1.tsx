@@ -95,7 +95,7 @@ export default function BulksaleV1(props: Props) {
 
       console.log('donation result', res);
       notification.success({
-        message: '寄付しました！',
+        message: '寄付を受け付けました！',
         description: (
           <>
             <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
@@ -166,7 +166,7 @@ export default function BulksaleV1(props: Props) {
 
       console.log('claim result', res);
       notification.success({
-        message: '請求しました！　',
+        message: '請求を受け付けました！',
         description: (
           <>
             <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
