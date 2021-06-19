@@ -15,9 +15,9 @@ import {
 
 // note: Master data for first event.
 export const masterDataForFirstEvent = {
-  title: '[2021年7月の寄付イベント名]',
+  title: 'フェーズ１寄付イベント（シードラウンド）',
   organizer: 'Presented by DeFiGeek Community JAPAN',
-  description: '説明説明説明',
+  description: '',
   goalAmount: 300, // ETH
   providedTokenSymbol: 'eth' as const,
   distributedTokenSymbol: 'txjp' as const,
