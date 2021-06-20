@@ -3,6 +3,7 @@ import { zonedTimeToUtc } from 'date-fns-tz';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
+import backgroundImage from '../../assets/images/background_sky-min.png';
 import Footer from '../../components/Footer';
 import { Container, Main } from '../../components/Layout';
 import BulksaleV1 from '../../components/event/templates/bulksale-v1/BulksaleV1';
@@ -92,7 +93,14 @@ export default function EventDetail() {
         <Web3Status />
       </div>
 
-      <Main>{selectTemplate()}</Main>
+      <Main
+        style={{
+          background: `url(${backgroundImage}) no-repeat center top scroll`,
+          backgroundSize: 'auto 100%',
+        }}
+      >
+        {selectTemplate()}
+      </Main>
 
       <Footer referenceList={masterDataForFirstEvent.referenceList}></Footer>
     </Container>

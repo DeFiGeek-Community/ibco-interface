@@ -286,18 +286,27 @@ export default function BulksaleV1(props: Props) {
               <Input
                 type="text"
                 style={{
-                  width: !isMobile ? '300px' : '100%',
+                  width: !isMobile ? '300px' : 'calc(100vw - 100px)',
+                  marginLeft: '16px',
+                  marginRight: '16px',
                   textAlign: 'right',
                   color: 'black',
                   backgroundColor: 'white',
                 }}
                 onChange={copyInputValue}
               />
-            </Form.Item>
-            <Form.Item>
               {props.data.eventSummary.providedTokenSymbol.toUpperCase()}
             </Form.Item>
-            <Form.Item>
+            <Form.Item></Form.Item>
+            <Form.Item
+              style={
+                isMobile
+                  ? {
+                      margin: '16px auto',
+                    }
+                  : {}
+              }
+            >
               <Button type="primary" shape="round" htmlType="submit">
                 寄付する
               </Button>
