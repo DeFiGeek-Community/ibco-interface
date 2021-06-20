@@ -15,7 +15,7 @@ import {
 
 // note: Master data for first event.
 export const masterDataForFirstEvent = {
-  title: 'フェーズ１寄付イベント（シードラウンド）',
+  title: 'Rinkebyテストネット寄付イベント予行演習',
   organizer: 'Presented by DeFiGeek Community JAPAN',
   description: '',
   goalAmount: 300, // ETH
