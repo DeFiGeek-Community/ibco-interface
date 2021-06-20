@@ -33,3 +33,7 @@ export function getEtherscanLink(
     }
   }
 }
+
+export function goToEtherscan(chainId: ChainId, hash: string) {
+  window.open(getEtherscanLink(chainId, hash, 'transaction'), '_blank');
+}
