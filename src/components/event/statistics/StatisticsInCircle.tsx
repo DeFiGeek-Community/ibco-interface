@@ -2,6 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
 import { Circle } from 'rc-progress';
 import styled from 'styled-components';
+import { targetedChainId } from '../../../constants/chains';
 import { getEtherscanLink } from '../../../utils/externalLink';
 import {
   CryptoCurrency,
@@ -73,7 +74,11 @@ export default function StatisticsInCircle({
   return (
     <LeftCirclePosition>
       <ExternalLink
-        href={getEtherscanLink(chainId!, contractAddress, 'address')}
+        href={getEtherscanLink(
+          chainId ?? targetedChainId,
+          contractAddress,
+          'address'
+        )}
       >
         <Circle
           percent={getTargetPercetage()}
@@ -96,7 +101,7 @@ export default function StatisticsInCircle({
                   lineHeight: '3.5rem',
                 }}
               >
-                {isStarting && active
+                {isStarting
                   ? formatPrice(totalProvided, providedTokenSymbol).value
                   : '????'}{' '}
                 {providedTokenSymbol.toUpperCase()}
@@ -107,7 +112,7 @@ export default function StatisticsInCircle({
                 }}
               >
                 ¥
-                {isStarting && active
+                {isStarting
                   ? '' +
                     formatPrice(
                       getFiatConversionAmount(totalProvided),
@@ -115,7 +120,7 @@ export default function StatisticsInCircle({
                     ).value
                   : '????'}
               </span>
-              {isStarting && active && !!goalAmount ? (
+              {isStarting && !!goalAmount ? (
                 <div
                   style={{
                     textAlign: 'center',

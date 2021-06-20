@@ -6,3 +6,12 @@ export const ETHERSCAN_API_URL =
   process.env.REACT_APP_CHAIN === 'mainnet'
     ? etherscanApiUrl
     : rinkebyEtherscanApiUrl;
+
+const subgraphName = 'txjp_ibco_mainnet';
+const rinkebySubgraphName = 'txjp_ibco-1';
+export const SUBGRAPH_HTTP_ENDPOINT = `https://api.thegraph.com/subgraphs/name/0xteatwo/${
+  process.env.REACT_APP_CHAIN === 'mainnet' ? subgraphName : rinkebySubgraphName
+}`;
+export const SUBGRAPH_WSS_ENDPOINT = `wss://api.thegraph.com/subgraphs/name/0xteatwo/${
+  process.env.REACT_APP_CHAIN === 'mainnet' ? subgraphName : rinkebySubgraphName
+}`;
