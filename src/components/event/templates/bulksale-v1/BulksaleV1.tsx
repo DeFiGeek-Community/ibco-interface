@@ -1,13 +1,15 @@
+import { useApolloClient } from '@apollo/client';
 import { Button, Form, Input, message, notification } from 'antd';
 import { useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { EVENT_INFO_QUERY } from '../../../../apollo/query';
 import { targetedChain, targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
 import useInterval from '../../../../hooks/useInterval';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
 import { mockData } from '../../../../pages/event/id';
 import { useEndTx, useStartTx } from '../../../../state/application/hooks';
-import { getEtherscanLink } from '../../../../utils/externalLink';
+import { goToEtherscan } from '../../../../utils/externalLink';
 import {
   getOracleUrlForFiatPriceOfToken,
   getTokenName,
@@ -19,14 +21,19 @@ import CalendarInCircle from '../../countdown-calendar/CalendarInCircle';
 import PersonalStatistics from '../../statistics/PersonalStatistics';
 import StatisticsInCircle from '../../statistics/StatisticsInCircle';
 
+const enableSubgraph: boolean = process.env.REACT_APP_ENABLE_SUBGRAPH
+  ? process.env.REACT_APP_ENABLE_SUBGRAPH.toLowerCase() === 'true'
+  : false;
+
 type Props = { data: typeof mockData };
 
 export default function BulksaleV1(props: Props) {
+  const client = useApolloClient();
   const { library, account, active, chainId } = useActiveWeb3React();
-  const contract = useFirstEventContract();
   const [form] = Form.useForm();
 
   // event info
+  const contract = useFirstEventContract();
   const [copiedInputNumber, setCopiedInputNumber] = useState(0);
   const [totalProvided, setTotalProvided] = useState(0);
   const [myTotalProvided, setMyTotalProvided] = useState(0);
@@ -40,12 +47,11 @@ export default function BulksaleV1(props: Props) {
 
   // get Total Provided and Personal Donation.
   useInterval(() => {
-    if (!active || targetedChainId !== chainId) {
-      // use the graph per chain network
-      return;
-    }
-
     try {
+      if (!active || targetedChainId !== chainId) {
+        enableSubgraph && getStateFromSubgraph();
+        return;
+      }
       getStatesFromContract();
     } catch (error) {
       console.error(error);
@@ -102,12 +108,7 @@ export default function BulksaleV1(props: Props) {
             <p>寄付額への反映は数confirmation後になります。</p>
           </>
         ),
-        onClick: () => {
-          window.open(
-            getEtherscanLink(chainId!, res.hash, 'transaction'),
-            '_blank'
-          );
-        },
+        onClick: () => goToEtherscan(chainId!, res.hash),
       });
 
       // reset
@@ -172,12 +173,7 @@ export default function BulksaleV1(props: Props) {
             <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
           </>
         ),
-        onClick: () => {
-          window.open(
-            getEtherscanLink(chainId!, res.hash, 'transaction'),
-            '_blank'
-          );
-        },
+        onClick: () => goToEtherscan(chainId!, res.hash),
       });
     } catch (error) {
       console.error('claim error!', error);
@@ -218,6 +214,22 @@ export default function BulksaleV1(props: Props) {
         setMyTotalProvided(Number(formatEther(state)));
       });
     }
+  }
+
+  function getStateFromSubgraph() {
+    client
+      .query({
+        query: EVENT_INFO_QUERY,
+        variables: {
+          id: props.data.eventSummary.contractAddress.toLowerCase(),
+        },
+      })
+      .then((result) => {
+        console.log('subgraph', result);
+        setTotalProvided(
+          Number(formatEther(result.data.eventInfo.totalProvided))
+        );
+      });
   }
 
   function getInputValue(value: any): number {
