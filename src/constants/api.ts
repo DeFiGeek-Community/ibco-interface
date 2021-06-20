@@ -7,8 +7,8 @@ export const ETHERSCAN_API_URL =
     ? etherscanApiUrl
     : rinkebyEtherscanApiUrl;
 
-const subgraphName = 'txjp_ibco_mainnet';
-const rinkebySubgraphName = 'txjp_ibco-1';
+const subgraphName = 'txjp_ibco_1';
+const rinkebySubgraphName = 'txjp_ibco_testnet_1';
 export const SUBGRAPH_HTTP_ENDPOINT = `https://api.thegraph.com/subgraphs/name/0xteatwo/${
   process.env.REACT_APP_CHAIN === 'mainnet' ? subgraphName : rinkebySubgraphName
 }`;
