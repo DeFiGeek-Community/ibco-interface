@@ -99,11 +99,16 @@ const PersonalStatistics = ({
                 {active ? sumOfProvidedAmount.value : '????'}{' '}
                 {providedTokenSymbol.toUpperCase()}
               </span>{' '}
-              （入力中
-              <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                {active ? inputtingProvidedAmount.value : '????'}{' '}
-                {providedTokenSymbol.toUpperCase()}）
-              </span>
+              {active && (
+                <>
+                  (入力中
+                  <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                    {inputtingProvidedAmount.value}{' '}
+                    {providedTokenSymbol.toUpperCase()}
+                  </span>
+                  )
+                </>
+              )}
               {sumOfProvidedAmount.isZeroByRound && (
                 <div
                   style={{

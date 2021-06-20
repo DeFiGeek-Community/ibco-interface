@@ -101,7 +101,7 @@ export default function StatisticsInCircle({
                   lineHeight: '3.5rem',
                 }}
               >
-                {isStarting && active
+                {isStarting
                   ? formatPrice(totalProvided, providedTokenSymbol).value
                   : '????'}{' '}
                 {providedTokenSymbol.toUpperCase()}
@@ -112,7 +112,7 @@ export default function StatisticsInCircle({
                 }}
               >
                 ¥
-                {isStarting && active
+                {isStarting
                   ? '' +
                     formatPrice(
                       getFiatConversionAmount(totalProvided),
@@ -120,7 +120,7 @@ export default function StatisticsInCircle({
                     ).value
                   : '????'}
               </span>
-              {isStarting && active && !!goalAmount ? (
+              {isStarting && !!goalAmount ? (
                 <div
                   style={{
                     textAlign: 'center',
