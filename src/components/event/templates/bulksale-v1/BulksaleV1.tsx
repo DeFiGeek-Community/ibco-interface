@@ -248,7 +248,7 @@ export default function BulksaleV1(props: Props) {
 
   return (
     <>
-      <H1>{props.data.eventSummary.title}</H1>
+      <H1 style={{ marginTop: '16px' }}>{props.data.eventSummary.title}</H1>
 
       <Description>
         {props.data.eventSummary.organizer}{' '}
