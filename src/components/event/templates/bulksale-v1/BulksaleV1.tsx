@@ -286,7 +286,7 @@ export default function BulksaleV1(props: Props) {
               <Input
                 type="text"
                 style={{
-                  width: !isMobile ? '300px' : 'calc(100vw - 100px)',
+                  width: !isMobile ? '300px' : 'calc(100vw - 40px)',
                   marginLeft: '16px',
                   marginRight: '16px',
                   textAlign: 'right',
@@ -295,9 +295,11 @@ export default function BulksaleV1(props: Props) {
                 }}
                 onChange={copyInputValue}
               />
-              {props.data.eventSummary.providedTokenSymbol.toUpperCase()}
             </Form.Item>
-            <Form.Item></Form.Item>
+            <Form.Item>
+              {!isMobile ??
+                props.data.eventSummary.providedTokenSymbol.toUpperCase()}
+            </Form.Item>
             <Form.Item
               style={
                 isMobile
