@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-// import logo from './logo.svg';
 import Web3ReactManager from './components/Web3ReactManager';
 import EventEditorCreate from './pages/event-editor/create';
 import EventDetail from './pages/event/id';
