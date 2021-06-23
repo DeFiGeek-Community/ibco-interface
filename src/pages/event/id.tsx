@@ -87,9 +87,7 @@ export default function EventDetail() {
         <link rel="icon" href={masterDataForFirstEvent.logoUrl} />
       </Helmet>
 
-      <div
-        style={{ textAlign: 'right', width: '100%', padding: '24px 24px 0' }}
-      >
+      <div style={{ textAlign: 'right', width: '100%', padding: '16px 16px' }}>
         <Web3Status />
       </div>
 

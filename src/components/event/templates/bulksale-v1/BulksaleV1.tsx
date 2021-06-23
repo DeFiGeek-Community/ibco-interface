@@ -1,25 +1,21 @@
 import { useApolloClient } from '@apollo/client';
-import { Button, Form, Input, message, notification } from 'antd';
 import { useState } from 'react';
-import { isMobile } from 'react-device-detect';
 import { EVENT_INFO_QUERY } from '../../../../apollo/query';
-import { targetedChain, targetedChainId } from '../../../../constants/chains';
+import { targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
 import useInterval from '../../../../hooks/useInterval';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
 import { mockData } from '../../../../pages/event/id';
-import { useEndTx, useStartTx } from '../../../../state/application/hooks';
-import { goToEtherscan } from '../../../../utils/externalLink';
 import {
   getOracleUrlForFiatPriceOfToken,
   getTokenName,
 } from '../../../../utils/prices';
-import { formatEther, parseEther } from '../../../../utils/web3';
-import { ExternalLink } from '../../../ExternalLink';
+import { formatEther } from '../../../../utils/web3';
 import { H1, Description, Grid } from '../../../Layout';
 import CalendarInCircle from '../../countdown-calendar/CalendarInCircle';
 import PersonalStatistics from '../../statistics/PersonalStatistics';
 import StatisticsInCircle from '../../statistics/StatisticsInCircle';
+import InputForm from './InputForm';
 
 const enableSubgraph: boolean = process.env.REACT_APP_ENABLE_SUBGRAPH
   ? process.env.REACT_APP_ENABLE_SUBGRAPH.toLowerCase() === 'true'
@@ -29,8 +25,7 @@ type Props = { data: typeof mockData };
 
 export default function BulksaleV1(props: Props) {
   const client = useApolloClient();
-  const { library, account, active, chainId } = useActiveWeb3React();
-  const [form] = Form.useForm();
+  const { account, active, chainId } = useActiveWeb3React();
 
   // event info
   const contract = useFirstEventContract();
@@ -40,10 +35,6 @@ export default function BulksaleV1(props: Props) {
   const [fiatRate, setFiatRate] = useState(0);
   const isStarting = props.data.eventSummary.unixStartDate * 1000 <= Date.now();
   const isEnding = props.data.eventSummary.unixEndDate * 1000 < Date.now();
-
-  // handle loading status
-  const startTx = useStartTx();
-  const endTx = useEndTx();
 
   // get Total Provided and Personal Donation.
   useInterval(() => {
@@ -80,129 +71,6 @@ export default function BulksaleV1(props: Props) {
       });
   }, 30000);
 
-  async function onFinish(values: any) {
-    if (!active || !account || !library) {
-      message.error(`ウォレットを接続してください。`);
-      return;
-    }
-    if (targetedChainId !== chainId || !contract) {
-      message.error(`ネットワークを${targetedChain}に接続してください。`);
-      return;
-    }
-
-    try {
-      startTx();
-
-      const signer = library.getSigner();
-      const res = await signer.sendTransaction({
-        to: contract.address,
-        value: parseEther(values.price),
-      });
-
-      console.log('donation result', res);
-      notification.success({
-        message: '寄付を受け付けました！',
-        description: (
-          <>
-            <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
-            <p>寄付額への反映は数confirmation後になります。</p>
-          </>
-        ),
-        onClick: () => goToEtherscan(chainId!, res.hash),
-      });
-
-      // reset
-      form.resetFields();
-      setCopiedInputNumber(0);
-    } catch (error) {
-      console.error('donation failed!', error);
-      if (error.message) {
-        if (
-          (error.message as string).search('The offering has not started') > -1
-        ) {
-          message.warning(`まだ始まっていません。`, 5);
-          return;
-        }
-        if (
-          (error.message as string).search('The offering has already ended') >
-          -1
-        ) {
-          message.warning(`終了しました。`, 5);
-          return;
-        }
-        if ((error.message as string).search('insufficient funds') > -1) {
-          message.warning(`残高が足りません。`, 5);
-          return;
-        }
-      }
-
-      notification.error({
-        message: 'エラーが発生しました。。',
-        description: error.messages,
-      });
-    } finally {
-      endTx();
-    }
-  }
-
-  async function claim() {
-    if (!active || !account || !library) {
-      message.error(`ウォレットを接続してください。`, 5);
-      return;
-    }
-    if (targetedChainId !== chainId || !contract) {
-      message.error(`ネットワークを${targetedChain}に接続してください。`, 5);
-      return;
-    }
-    if (myTotalProvided <= 0) {
-      message.info(`あなた（${account}）の寄付額は0です。`, 5);
-      return;
-    }
-
-    try {
-      startTx();
-
-      const signer = contract.connect(library.getSigner());
-      const res = await signer.claim();
-
-      console.log('claim result', res);
-      notification.success({
-        message: '請求を受け付けました！',
-        description: (
-          <>
-            <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
-          </>
-        ),
-        onClick: () => goToEtherscan(chainId!, res.hash),
-      });
-    } catch (error) {
-      console.error('claim error!', error);
-      notification.error({
-        message: 'エラーが発生しました。。',
-        description: error.messages,
-      });
-    } finally {
-      endTx();
-    }
-  }
-
-  function copyInputValue(e: React.ChangeEvent<HTMLInputElement>) {
-    const newNumber = getInputValue(e.target.value);
-    setCopiedInputNumber(newNumber);
-  }
-
-  function checkPrice(_: any, value: string) {
-    const val = getInputValue(value);
-    if (val <= 0) {
-      return Promise.reject('0以上を入力していください。');
-    }
-    if (val < 0.000000000000000001) {
-      return Promise.reject('小数点は18桁までです。');
-    }
-
-    return Promise.resolve(val);
-  }
-
   function getStatesFromContract() {
     if (active && contract && account) {
       contract.totalProvided().then((state) => {
@@ -230,20 +98,6 @@ export default function BulksaleV1(props: Props) {
           Number(formatEther(result.data.eventInfo.totalProvided))
         );
       });
-  }
-
-  function getInputValue(value: any): number {
-    const val = value ?? 0;
-    let newVal = 0;
-    try {
-      newVal = Number(val);
-      if (Number.isNaN(newVal)) {
-        newVal = 0;
-      }
-    } catch (error) {
-      newVal = 0;
-    }
-    return newVal;
   }
 
   return (
@@ -274,61 +128,13 @@ export default function BulksaleV1(props: Props) {
         ></CalendarInCircle>
       </Grid>
 
-      {isStarting && !isEnding && (
-        <Grid>
-          <Form
-            name="fundraiser_form_controls"
-            layout="inline"
-            form={form}
-            onFinish={onFinish}
-          >
-            <Form.Item name="price" rules={[{ validator: checkPrice }]}>
-              <Input
-                type="text"
-                style={{
-                  width: !isMobile ? '300px' : 'calc(100vw - 40px)',
-                  marginLeft: '16px',
-                  marginRight: '16px',
-                  textAlign: 'right',
-                  color: 'black',
-                  backgroundColor: 'white',
-                }}
-                onChange={copyInputValue}
-              />
-            </Form.Item>
-            <Form.Item>
-              {!isMobile ??
-                props.data.eventSummary.providedTokenSymbol.toUpperCase()}
-            </Form.Item>
-            <Form.Item
-              style={
-                isMobile
-                  ? {
-                      margin: '16px auto',
-                    }
-                  : {}
-              }
-            >
-              <Button type="primary" shape="round" htmlType="submit">
-                寄付する
-              </Button>
-            </Form.Item>
-          </Form>
-        </Grid>
-      )}
-
-      {isEnding && (
-        <Grid>
-          <Button
-            type="primary"
-            shape="round"
-            htmlType="button"
-            onClick={claim}
-          >
-            請求する
-          </Button>
-        </Grid>
-      )}
+      <InputForm
+        isStarting={isStarting}
+        isEnding={isEnding}
+        myTotalProvided={myTotalProvided}
+        providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
+        setCopiedInputNumber={setCopiedInputNumber}
+      ></InputForm>
 
       {isStarting && (
         <PersonalStatistics
