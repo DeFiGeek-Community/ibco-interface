@@ -46,6 +46,14 @@ describe('checkPrice', () => {
     expect(await checkPrice(dummyFirstArg, float)).toBe(Number(float));
     const exponent = '1e8';
     expect(await checkPrice(dummyFirstArg, exponent)).toBe(Number(exponent));
+    const fractionalDigitsIs18 = '0.000000000000000001';
+    expect(await checkPrice(dummyFirstArg, fractionalDigitsIs18)).toBe(
+      Number(fractionalDigitsIs18)
+    );
+    const intergerDigitsIsOver18 = '1234567890123456789';
+    expect(await checkPrice(dummyFirstArg, intergerDigitsIsOver18)).toBe(
+      Number(intergerDigitsIsOver18)
+    );
   });
 
   it('shoud be error for Zero', () => {
@@ -67,5 +75,10 @@ describe('checkPrice', () => {
     expect(overDigits1).rejects.toThrow(ErrorMessageForDigits);
     const overDigits2 = checkPrice(dummyFirstArg, '0.1000000000000000001');
     expect(overDigits2).rejects.toThrow(ErrorMessageForDigits);
+    const overDigits3 = checkPrice(
+      dummyFirstArg,
+      '1234567890123456789.1234567890123456789'
+    );
+    expect(overDigits3).rejects.toThrow(ErrorMessageForDigits);
   });
 });
