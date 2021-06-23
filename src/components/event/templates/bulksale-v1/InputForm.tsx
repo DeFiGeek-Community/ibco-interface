@@ -1,4 +1,5 @@
 import { Button, Form, Input, message, notification } from 'antd';
+import { useCallback } from 'react';
 import { isMobile } from 'react-device-detect';
 import { targetedChain, targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
@@ -61,72 +62,86 @@ export default function InputForm({
   const startTx = useStartTx();
   const endTx = useEndTx();
 
-  async function onFinish(values: any) {
-    if (!active || !account || !library) {
-      message.error(`ウォレットを接続してください。`);
-      return;
-    }
-    if (targetedChainId !== chainId || !contract) {
-      message.error(`ネットワークを${targetedChain}に接続してください。`);
-      return;
-    }
-
-    try {
-      startTx();
-
-      const signer = library.getSigner();
-      const res = await signer.sendTransaction({
-        to: contract.address,
-        value: parseEther(values.price),
-      });
-
-      console.log('donation result', res);
-      notification.success({
-        message: '寄付を受け付けました！',
-        description: (
-          <>
-            <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
-            <p>寄付額への反映は数confirmation後になります。</p>
-          </>
-        ),
-        onClick: () => goToEtherscan(chainId!, res.hash),
-      });
-
-      // reset
-      form.resetFields();
-      setCopiedInputNumber(0);
-    } catch (error) {
-      console.error('donation failed!', error);
-      if (error.message) {
-        if (
-          (error.message as string).search('The offering has not started') > -1
-        ) {
-          message.warning(`まだ始まっていません。`, 5);
-          return;
-        }
-        if (
-          (error.message as string).search('The offering has already ended') >
-          -1
-        ) {
-          message.warning(`終了しました。`, 5);
-          return;
-        }
-        if ((error.message as string).search('insufficient funds') > -1) {
-          message.warning(`残高が足りません。`, 5);
-          return;
-        }
+  const onFinish = useCallback(
+    async (values: any) => {
+      if (!active || !account || !library) {
+        message.error(`ウォレットを接続してください。`);
+        return;
+      }
+      if (targetedChainId !== chainId || !contract) {
+        message.error(`ネットワークを${targetedChain}に接続してください。`);
+        return;
       }
 
-      notification.error({
-        message: 'エラーが発生しました。。',
-        description: error.messages,
-      });
-    } finally {
-      endTx();
-    }
-  }
+      try {
+        startTx();
 
-  async function claim() {
+        const signer = library.getSigner();
+        const res = await signer.sendTransaction({
+          to: contract.address,
+          value: parseEther(values.price),
+        });
+
+        console.log('donation result', res);
+        notification.success({
+          message: '寄付を受け付けました！',
+          description: (
+            <>
+              <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
+              <p>寄付額への反映は数confirmation後になります。</p>
+            </>
+          ),
+          onClick: () => goToEtherscan(chainId!, res.hash),
+        });
+
+        // reset
+        form.resetFields();
+        setCopiedInputNumber(0);
+      } catch (error) {
+        console.error('donation failed!', error);
+        if (error.message) {
+          if (
+            (error.message as string).search('The offering has not started') >
+            -1
+          ) {
+            message.warning(`まだ始まっていません。`, 5);
+            return;
+          }
+          if (
+            (error.message as string).search('The offering has already ended') >
+            -1
+          ) {
+            message.warning(`終了しました。`, 5);
+            return;
+          }
+          if ((error.message as string).search('insufficient funds') > -1) {
+            message.warning(`残高が足りません。`, 5);
+            return;
+          }
+        }
+
+        notification.error({
+          message: 'エラーが発生しました。。',
+          description: error.messages,
+        });
+      } finally {
+        endTx();
+      }
+    },
+    [
+      form,
+      active,
+      account,
+      library,
+      chainId,
+      contract,
+      startTx,
+      endTx,
+      setCopiedInputNumber,
+    ]
+  );
+
+  const claim = useCallback(async () => {
     if (!active || !account || !library) {
       message.error(`ウォレットを接続してください。`, 5);
       return;
@@ -165,12 +180,24 @@ export default function InputForm({
     } finally {
       endTx();
     }
-  }
+  }, [
+    active,
+    account,
+    library,
+    chainId,
+    myTotalProvided,
+    contract,
+    startTx,
+    endTx,
+  ]);
 
-  function copyInputValue(e: React.ChangeEvent<HTMLInputElement>) {
-    const newNumber = getInputValue(e.target.value);
-    setCopiedInputNumber(newNumber);
-  }
+  const copyInputValue = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newNumber = getInputValue(e.target.value);
+      setCopiedInputNumber(newNumber);
+    },
+    [setCopiedInputNumber]
+  );
 
   return (
     <>
