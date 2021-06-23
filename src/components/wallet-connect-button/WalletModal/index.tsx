@@ -181,6 +181,11 @@ export default function WalletModal({ ENSName }: { ENSName?: string }) {
 
     connector &&
       activate(connector, undefined, true).catch((error) => {
+        console.log(
+          'キャッチ',
+          error,
+          error instanceof UnsupportedChainIdError
+        );
         if (error instanceof UnsupportedChainIdError) {
           activate(connector); // a little janky...can't use setError because the connector isn't set
         } else {
