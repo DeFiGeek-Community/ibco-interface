@@ -9,6 +9,35 @@ import { parseEther } from '../../../../utils/web3';
 import { ExternalLink } from '../../../ExternalLink';
 import { Grid } from '../../../Layout';
 
+export function getInputValue(value: any): number {
+  const val = value ?? 0;
+  let newVal = 0;
+  try {
+    newVal = Number(val);
+    if (Number.isNaN(newVal)) {
+      newVal = 0;
+    }
+  } catch (error) {
+    newVal = 0;
+  }
+  return newVal;
+}
+
+export const ErrorMessageForZero = '0以上を入力してください。';
+export const ErrorMessageForDigits = '小数点は18桁までです。';
+export function checkPrice(_: any, value: string): Promise<number> {
+  const val = getInputValue(value);
+  if (val <= 0) {
+    return Promise.reject(ErrorMessageForZero);
+  }
+  const numbers = value.toString().split('.');
+  if (numbers[1] && numbers[1].length > 18) {
+    return Promise.reject(ErrorMessageForDigits);
+  }
+
+  return Promise.resolve(val);
+}
+
 type Props = {
   isStarting: boolean;
   isEnding: boolean;
@@ -141,32 +170,6 @@ export default function InputForm({
   function copyInputValue(e: React.ChangeEvent<HTMLInputElement>) {
     const newNumber = getInputValue(e.target.value);
     setCopiedInputNumber(newNumber);
-  }
-
-  function getInputValue(value: any): number {
-    const val = value ?? 0;
-    let newVal = 0;
-    try {
-      newVal = Number(val);
-      if (Number.isNaN(newVal)) {
-        newVal = 0;
-      }
-    } catch (error) {
-      newVal = 0;
-    }
-    return newVal;
-  }
-
-  function checkPrice(_: any, value: string) {
-    const val = getInputValue(value);
-    if (val <= 0) {
-      return Promise.reject('0以上を入力してください。');
-    }
-    if (val < 0.000000000000000001) {
-      return Promise.reject('小数点は18桁までです。');
-    }
-
-    return Promise.resolve(val);
   }
 
   return (
