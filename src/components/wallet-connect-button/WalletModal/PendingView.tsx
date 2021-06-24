@@ -1,4 +1,5 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { Col, Row } from 'antd';
 import { darken } from 'polished';
 import styled from 'styled-components';
 import { injected } from '../../../connectors';
@@ -74,17 +75,36 @@ export default function PendingView({
       <LoadingMessage error={error}>
         <LoadingWrapper>
           {error ? (
-            <ErrorGroup>
-              <div>Error connecting.</div>
-              <ErrorButton
-                onClick={() => {
-                  setPendingError(false);
-                  connector && tryActivation(connector);
-                }}
-              >
-                Try Again
-              </ErrorButton>
-            </ErrorGroup>
+            <>
+              <ErrorGroup>
+                <Row>
+                  <Col span={6}>
+                    <div>Error connecting.</div>
+                  </Col>
+                  <Col span={18}>
+                    <ErrorButton
+                      onClick={() => {
+                        setPendingError(false);
+                        connector && tryActivation(connector);
+                      }}
+                      style={{ width: '30%' }}
+                    >
+                      Try Again
+                    </ErrorButton>
+                    <p
+                      style={{
+                        color: 'white',
+                        fontSize: '0.5rem',
+                        marginTop: '12px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      拡張機能の場合は拡張機能から直接操作してみてください。
+                    </p>
+                  </Col>
+                </Row>
+              </ErrorGroup>
+            </>
           ) : (
             <>
               <Loader />
