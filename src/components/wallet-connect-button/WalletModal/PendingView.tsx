@@ -75,36 +75,31 @@ export default function PendingView({
       <LoadingMessage error={error}>
         <LoadingWrapper>
           {error ? (
-            <>
-              <ErrorGroup>
-                <Row>
-                  <Col span={6}>
-                    <div>Error connecting.</div>
-                  </Col>
-                  <Col span={18}>
-                    <ErrorButton
-                      onClick={() => {
-                        setPendingError(false);
-                        connector && tryActivation(connector);
-                      }}
-                      style={{ width: '30%' }}
-                    >
-                      Try Again
-                    </ErrorButton>
-                    <p
-                      style={{
-                        color: 'white',
-                        fontSize: '0.5rem',
-                        marginTop: '12px',
-                        marginBottom: '0',
-                      }}
-                    >
-                      拡張機能の場合は拡張機能から直接操作してみてください。
-                    </p>
-                  </Col>
-                </Row>
-              </ErrorGroup>
-            </>
+            <ErrorGroup>
+              <div>Error connecting.</div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <ErrorButton
+                  onClick={() => {
+                    setPendingError(false);
+                    connector && tryActivation(connector);
+                  }}
+                  style={{ width: connector === injected ? '30%' : '100%' }}
+                >
+                  Try Again
+                </ErrorButton>
+                {connector === injected && (
+                  <p
+                    style={{
+                      color: 'white',
+                      fontSize: '0.5rem',
+                      margin: '12px 16px 0px',
+                    }}
+                  >
+                    または拡張機能から直接操作してみてください。
+                  </p>
+                )}
+              </div>
+            </ErrorGroup>
           ) : (
             <>
               <Loader />
