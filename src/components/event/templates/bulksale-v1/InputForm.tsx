@@ -5,7 +5,7 @@ import { targetedChain, targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
 import { useEndTx, useStartTx } from '../../../../state/application/hooks';
-import { goToEtherscan } from '../../../../utils/externalLink';
+import { getEtherscanLink } from '../../../../utils/externalLink';
 import { parseEther } from '../../../../utils/web3';
 import { ExternalLink } from '../../../ExternalLink';
 import { Grid } from '../../../Layout';
@@ -87,11 +87,14 @@ export default function InputForm({
           message: '寄付を受け付けました！',
           description: (
             <>
-              <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
+              <ExternalLink
+                href={getEtherscanLink(chainId, res.hash, 'transaction')}
+              >
+                {res.hash}
+              </ExternalLink>
               <p>寄付額への反映は数confirmation後になります。</p>
             </>
           ),
-          onClick: () => goToEtherscan(chainId!, res.hash),
         });
 
         // reset
@@ -166,10 +169,13 @@ export default function InputForm({
         message: '請求を受け付けました！',
         description: (
           <>
-            <ExternalLink href={res.hash}>{res.hash}</ExternalLink>
+            <ExternalLink
+              href={getEtherscanLink(chainId, res.hash, 'transaction')}
+            >
+              {res.hash}
+            </ExternalLink>
           </>
         ),
-        onClick: () => goToEtherscan(chainId!, res.hash),
       });
     } catch (error) {
       console.error('claim error!', error);
