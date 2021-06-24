@@ -19,7 +19,8 @@ export const masterDataForFirstEvent = {
   title: 'フェーズ１寄付イベント（シードラウンド）',
   organizer: 'Presented by DeFiGeek Community JAPAN',
   description: '',
-  goalAmount: 300, // ETH
+  interimGoalAmount: 300, // ETH
+  finalGoalAmount: 1000, // ETH
   providedTokenSymbol: 'eth' as const,
   distributedTokenSymbol: 'txjp' as const,
   fiatSymbol: 'jpy' as const,

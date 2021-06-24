@@ -1,3 +1,4 @@
+import { StarTwoTone } from '@ant-design/icons';
 import { useWeb3React } from '@web3-react/core';
 import { Skeleton } from 'antd';
 import { Circle } from 'rc-progress';
@@ -37,9 +38,19 @@ const InnerPosition = styled.span`
   }
 `;
 
+const StarPosition = styled.span`
+  display: inline-block;
+  position: absolute;
+  top: 58%;
+  right: 1%;
+  font-size: 2.5rem;
+  z-index: 100;
+`;
+
 type Props = {
   totalProvided: number;
-  goalAmount: number;
+  interimGoalAmount: number;
+  finalGoalAmount: number;
   providedTokenSymbol: CryptoCurrency;
   fiatSymbol: FiatCurrency;
   fiatRate: number;
@@ -49,22 +60,23 @@ type Props = {
 
 export default function StatisticsInCircle({
   totalProvided,
-  goalAmount,
+  interimGoalAmount,
+  finalGoalAmount,
   providedTokenSymbol,
   fiatSymbol,
   fiatRate,
   contractAddress,
   isStarting,
 }: Props) {
-  const { active, chainId } = useWeb3React();
+  const { chainId } = useWeb3React();
   // FIXME: replace mock
   const isLoading = false;
 
   function getTargetPercetage() {
-    if (goalAmount <= 0) {
+    if (finalGoalAmount <= 0) {
       return 0;
     }
-    return (totalProvided / goalAmount) * 100;
+    return (totalProvided / finalGoalAmount) * 100;
   }
 
   function getFiatConversionAmount(token: number) {
@@ -85,6 +97,9 @@ export default function StatisticsInCircle({
           strokeWidth={4}
           strokeColor="#D3D3D3"
         />
+        <StarPosition>
+          <StarTwoTone />
+        </StarPosition>
         <InnerPosition>
           <h3
             style={{
@@ -120,7 +135,7 @@ export default function StatisticsInCircle({
                     ).value
                   : '????'}
               </span>
-              {isStarting && !!goalAmount ? (
+              {isStarting && !!interimGoalAmount ? (
                 <div
                   style={{
                     textAlign: 'center',
@@ -128,9 +143,9 @@ export default function StatisticsInCircle({
                     marginTop: '10px',
                   }}
                 >
-                  目標 {goalAmount}
+                  目標 {interimGoalAmount}
                   {providedTokenSymbol.toUpperCase()} {' 以上'}
-                  {totalProvided >= goalAmount ? 'を達成しました🎉' : ''}
+                  {totalProvided >= interimGoalAmount ? 'を達成しました🎉' : ''}
                 </div>
               ) : null}
             </>
