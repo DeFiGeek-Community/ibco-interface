@@ -19,7 +19,8 @@ export const masterDataForFirstEvent = {
   title: 'Rinkebyテストネット寄付イベント予行演習',
   organizer: 'Presented by DeFiGeek Community JAPAN',
   description: '',
-  goalAmount: 300, // ETH
+  interimGoalAmount: 300, // ETH
+  finalGoalAmount: 1000, // ETH
   providedTokenSymbol: 'eth' as const,
   distributedTokenSymbol: 'txjp' as const,
   fiatSymbol: 'jpy' as const,
