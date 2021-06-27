@@ -152,7 +152,7 @@ export default function InputForm({
       return;
     }
 
-    let hash: string;
+    let hash = '';
     try {
       startTx();
 
@@ -164,12 +164,11 @@ export default function InputForm({
       console.log('claim result', res);
     } catch (error) {
       console.error('claim error!', error);
+      endTx(hash);
       notification.error({
         message: 'エラーが発生しました。。',
         description: error.messages,
       });
-    } finally {
-      endTx();
     }
   }, [
     active,
