@@ -25,7 +25,7 @@ type Props = { data: typeof mockData };
 
 export default function BulksaleV1(props: Props) {
   const client = useApolloClient();
-  const { account, active, chainId } = useActiveWeb3React();
+  const { account, active, chainId, library } = useActiveWeb3React();
 
   // event info
   const contract = useFirstEventContract();
@@ -33,6 +33,7 @@ export default function BulksaleV1(props: Props) {
   const [totalProvided, setTotalProvided] = useState(0);
   const [myTotalProvided, setMyTotalProvided] = useState(0);
   const [fiatRate, setFiatRate] = useState(0);
+  const [isClaimed, setIsClaimed] = useState(false);
   const isStarting = props.data.eventSummary.unixStartDate * 1000 <= Date.now();
   const isEnding = props.data.eventSummary.unixEndDate * 1000 < Date.now();
 
@@ -72,15 +73,29 @@ export default function BulksaleV1(props: Props) {
   }, 30000);
 
   function getStatesFromContract() {
-    if (active && contract && account) {
+    if (active && contract && account && library) {
       contract.totalProvided().then((state) => {
         console.log('totalProvided', formatEther(state));
         setTotalProvided(Number(formatEther(state)));
       });
-      contract.provided(account).then((state) => {
-        console.log('myTotalProvided', formatEther(state));
-        setMyTotalProvided(Number(formatEther(state)));
-      });
+      if (!isClaimed) {
+        contract.provided(account).then((state) => {
+          console.log('myTotalProvided', formatEther(state));
+          setMyTotalProvided(Number(formatEther(state)));
+        });
+      }
+
+      // Check if claimed
+      if (isEnding && !isClaimed) {
+        const filter = contract.filters.Claimed(account);
+        library.getLogs({ ...filter, fromBlock: 8792758 }).then((log) => {
+          console.log(log);
+          if (log.length > 0) {
+            setIsClaimed(true);
+            //setMyTotalProvided(log[0]);
+          }
+        });
+      }
     }
   }
 
@@ -135,6 +150,7 @@ export default function BulksaleV1(props: Props) {
         myTotalProvided={myTotalProvided}
         providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
         setCopiedInputNumber={setCopiedInputNumber}
+        isClaimed={isClaimed}
       ></InputForm>
 
       {isStarting && (
@@ -148,6 +164,7 @@ export default function BulksaleV1(props: Props) {
           }
           providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
           isEnding={isEnding}
+          isClaimed={isClaimed}
         ></PersonalStatistics>
       )}
     </>

@@ -54,6 +54,7 @@ type Props = {
   myTotalProvided: number;
   providedTokenSymbol: string;
   setCopiedInputNumber: (value: number) => void;
+  isClaimed: boolean;
 };
 
 export default function InputForm({
@@ -62,6 +63,7 @@ export default function InputForm({
   myTotalProvided,
   providedTokenSymbol,
   setCopiedInputNumber,
+  isClaimed,
 }: Props) {
   const { library, account, active, chainId } = useActiveWeb3React();
   const [form] = Form.useForm();
@@ -249,7 +251,7 @@ export default function InputForm({
         </>
       )}
 
-      {isEnding && (
+      {isEnding && !isClaimed && (
         <Grid>
           <Button
             type="primary"
@@ -261,6 +263,7 @@ export default function InputForm({
           </Button>
         </Grid>
       )}
+      {isEnding && isClaimed && <Grid>すでに請求済みです</Grid>}
     </>
   );
 }
