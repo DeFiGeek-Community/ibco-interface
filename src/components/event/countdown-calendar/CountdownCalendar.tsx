@@ -56,9 +56,9 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
       return;
     }
     const now = Math.floor(Date.now() / 1000);
-    const newCountdown = { ...getCountdown(unixEndDate - now) };
+    const newCountdown = getCountdown(unixEndDate - now);
     setCountdown(newCountdown);
-  }, 1000);
+  }, 500);
 
   return (
     <div>
@@ -104,7 +104,7 @@ export default function CountdownCalendar({ unixEndDate }: Props) {
 
 function getCountdown(duration: number): Countdown {
   let restSec = duration;
-  const countdown: Countdown = initialCountdown;
+  const countdown: Countdown = { ...initialCountdown };
   if (restSec >= 86400) {
     countdown.days = Math.floor(restSec / 86400).toString();
     restSec = restSec % 86400;
