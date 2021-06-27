@@ -1,5 +1,7 @@
 import { useApolloClient } from '@apollo/client';
+import { Interface } from 'ethers/lib/utils';
 import { useState } from 'react';
+import TXJPIBCO from '../../../../abis/TXJPInitialOffering.json';
 import { EVENT_INFO_QUERY } from '../../../../apollo/query';
 import { targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
@@ -92,7 +94,9 @@ export default function BulksaleV1(props: Props) {
           console.log(log);
           if (log.length > 0) {
             setIsClaimed(true);
-            //setMyTotalProvided(log[0]);
+            const iface = new Interface(TXJPIBCO.abi);
+            const event = iface.parseLog(log[0]);
+            setMyTotalProvided(Number(formatEther(event.args[1])));
           }
         });
       }
