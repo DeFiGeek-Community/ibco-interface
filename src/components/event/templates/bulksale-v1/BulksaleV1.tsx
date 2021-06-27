@@ -77,12 +77,10 @@ export default function BulksaleV1(props: Props) {
   function getStatesFromContract() {
     if (active && contract && account && library) {
       contract.totalProvided().then((state) => {
-        console.log('totalProvided', formatEther(state));
         setTotalProvided(Number(formatEther(state)));
       });
       if (!isClaimed) {
         contract.provided(account).then((state) => {
-          console.log('myTotalProvided', formatEther(state));
           setMyTotalProvided(Number(formatEther(state)));
         });
       }
@@ -91,7 +89,6 @@ export default function BulksaleV1(props: Props) {
       if (isEnding && !isClaimed) {
         const filter = contract.filters.Claimed(account);
         library.getLogs({ ...filter, fromBlock: 8792758 }).then((log) => {
-          console.log(log);
           if (log.length > 0) {
             setIsClaimed(true);
             const iface = new Interface(TXJPIBCO.abi);
@@ -112,7 +109,6 @@ export default function BulksaleV1(props: Props) {
         },
       })
       .then((result) => {
-        console.log('subgraph', result);
         setTotalProvided(
           Number(formatEther(result.data.eventInfo.totalProvided))
         );
