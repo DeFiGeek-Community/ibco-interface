@@ -19,7 +19,7 @@ import { NETWORK_LABELS } from '../../constants/chains';
 import { NETWORK_CONTEXT_NAME } from '../../constants/web3';
 import useENSName from '../../hooks/useENSName';
 import {
-  usePendingTx,
+  usePendingTxCount,
   useWalletModalToggle,
 } from '../../state/application/hooks';
 import { shortenAddress } from '../../utils/web3';
@@ -163,7 +163,7 @@ function Web3StatusInner() {
   const { ENSName } = useENSName(account ?? undefined);
 
   const toggleWalletModal = useWalletModalToggle();
-  const txCount = usePendingTx();
+  const txCount = usePendingTxCount();
   const hasPendingTransactions = txCount > 0;
 
   if (account) {

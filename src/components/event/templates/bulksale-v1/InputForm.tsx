@@ -4,7 +4,11 @@ import { isMobile } from 'react-device-detect';
 import { targetedChain, targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
-import { useEndTx, useStartTx } from '../../../../state/application/hooks';
+import {
+  useEndTx,
+  useSetHash,
+  useStartTx,
+} from '../../../../state/application/hooks';
 import { getEtherscanLink } from '../../../../utils/externalLink';
 import { parseEther } from '../../../../utils/web3';
 import { ExternalLink } from '../../../ExternalLink';
@@ -60,6 +64,7 @@ export default function InputForm({
 
   // handle loading status
   const startTx = useStartTx();
+  const setHash = useSetHash();
   const endTx = useEndTx();
 
   const onFinish = useCallback(
@@ -73,35 +78,25 @@ export default function InputForm({
         return;
       }
 
+      let hash = '';
       try {
         startTx();
-
         const signer = library.getSigner();
         const res = await signer.sendTransaction({
           to: contract.address,
           value: parseEther(values.price),
         });
+        hash = res.hash;
+        setHash(hash, 'donate');
 
         console.log('donation result', res);
-        notification.success({
-          message: '寄付を受け付けました！',
-          description: (
-            <>
-              <ExternalLink
-                href={getEtherscanLink(chainId, res.hash, 'transaction')}
-              >
-                {res.hash}
-              </ExternalLink>
-              <p>寄付額への反映は数confirmation後になります。</p>
-            </>
-          ),
-        });
 
         // reset
         form.resetFields();
         setCopiedInputNumber(0);
       } catch (error) {
         console.error('donation failed!', error);
+        endTx(hash);
         if (error.message) {
           if (
             (error.message as string).search('The offering has not started') >
@@ -127,8 +122,6 @@ export default function InputForm({
           message: 'エラーが発生しました。。',
           description: error.messages,
         });
-      } finally {
-        endTx();
       }
     },
     [
@@ -139,6 +132,7 @@ export default function InputForm({
       chainId,
       contract,
       startTx,
+      setHash,
       endTx,
       setCopiedInputNumber,
     ]
@@ -158,25 +152,16 @@ export default function InputForm({
       return;
     }
 
+    let hash: string;
     try {
       startTx();
 
       const signer = contract.connect(library.getSigner());
       const res = await signer.claim();
+      hash = res.hash;
+      setHash(hash, 'claim');
 
       console.log('claim result', res);
-      notification.success({
-        message: '請求を受け付けました！',
-        description: (
-          <>
-            <ExternalLink
-              href={getEtherscanLink(chainId, res.hash, 'transaction')}
-            >
-              {res.hash}
-            </ExternalLink>
-          </>
-        ),
-      });
     } catch (error) {
       console.error('claim error!', error);
       notification.error({

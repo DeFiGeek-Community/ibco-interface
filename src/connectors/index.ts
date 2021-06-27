@@ -1,4 +1,4 @@
-import { Web3Provider } from '@ethersproject/providers';
+import { WebSocketProvider } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 // import { PortisConnector } from '@web3-react/portis-connector';
 // import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -27,10 +27,10 @@ export const network = new NetworkConnector({
   urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
 });
 
-let networkLibrary: Web3Provider | undefined;
-export function getNetworkLibrary(): Web3Provider {
+let networkLibrary: WebSocketProvider | undefined;
+export function getNetworkLibrary(): WebSocketProvider {
   return (networkLibrary =
-    networkLibrary ?? new Web3Provider(network.provider as any));
+    networkLibrary ?? new WebSocketProvider(network.provider as any));
 }
 
 export const injected = new InjectedConnector({
