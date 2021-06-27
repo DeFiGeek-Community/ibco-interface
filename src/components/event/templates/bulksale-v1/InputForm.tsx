@@ -96,8 +96,6 @@ export default function InputForm({
         hash = res.hash;
         setHash(hash, 'donate');
 
-        console.log('donation result', res);
-
         // reset
         form.resetFields();
         setCopiedInputNumber(0);
@@ -167,8 +165,6 @@ export default function InputForm({
       const res = await signer.claim();
       hash = res.hash;
       setHash(hash, 'claim');
-
-      console.log('claim result', res);
     } catch (error) {
       console.error('claim error!', error);
       endTx(hash);

@@ -55,10 +55,9 @@ export default function EventDetail() {
 
   // Get the event ID from URL, and get event detail via web3.
   useEffect(() => {
-    console.log('get contract address!', location.hash);
     // get the event ID and save it
     // TODO: security
-    const eventAddress = location.hash.replace('#/event/', '');
+    const eventAddress = location.pathname.replace('/event/', '');
     setEventAddress(eventAddress);
     // check whether wallet connects
     // get template address
