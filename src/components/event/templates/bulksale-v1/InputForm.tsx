@@ -1,6 +1,7 @@
 import { Button, Form, Input, message, notification } from 'antd';
 import { useCallback } from 'react';
 import { isMobile } from 'react-device-detect';
+import styled from 'styled-components';
 import { targetedChain, targetedChainId } from '../../../../constants/chains';
 import { useFirstEventContract } from '../../../../hooks/useContract';
 import { useActiveWeb3React } from '../../../../hooks/useWeb3';
@@ -9,10 +10,14 @@ import {
   useSetHash,
   useStartTx,
 } from '../../../../state/application/hooks';
-import { getEtherscanLink } from '../../../../utils/externalLink';
 import { parseEther } from '../../../../utils/web3';
-import { ExternalLink } from '../../../ExternalLink';
 import { Grid } from '../../../Layout';
+
+const Note = styled.div`
+  @media (min-width: 600px) {
+    max-width: 30%;
+  }
+`;
 
 export function getInputValue(value: any): number {
   const val = value ?? 0;
@@ -195,50 +200,55 @@ export default function InputForm({
   return (
     <>
       {isStarting && !isEnding && (
-        <Grid>
-          <Form
-            name="fundraiser_form_controls"
-            layout="inline"
-            form={form}
-            onFinish={onFinish}
-          >
-            <Form.Item
-              name="price"
-              rules={[{ validator: checkPrice }]}
-              style={{
-                width: !isMobile ? '300px' : 'calc(100vw - 40px)',
-                marginLeft: '16px',
-                marginRight: '16px',
-                textAlign: 'right',
-              }}
+        <>
+          <Grid>
+            <Form
+              name="fundraiser_form_controls"
+              layout="inline"
+              form={form}
+              onFinish={onFinish}
             >
-              <Input
-                type="text"
-                onChange={copyInputValue}
+              <Form.Item
+                name="price"
+                rules={[{ validator: checkPrice }]}
                 style={{
-                  color: 'black',
-                  backgroundColor: 'white',
+                  width: !isMobile ? '300px' : 'calc(100vw - 40px)',
+                  marginLeft: '16px',
+                  marginRight: '16px',
+                  textAlign: 'right',
                 }}
-              />
-            </Form.Item>
-            <Form.Item>
-              {!isMobile ?? providedTokenSymbol.toUpperCase()}
-            </Form.Item>
-            <Form.Item
-              style={
-                isMobile
-                  ? {
-                      margin: '16px auto',
-                    }
-                  : {}
-              }
-            >
-              <Button type="primary" shape="round" htmlType="submit">
-                寄付する
-              </Button>
-            </Form.Item>
-          </Form>
-        </Grid>
+              >
+                <Input
+                  type="text"
+                  onChange={copyInputValue}
+                  style={{
+                    color: 'black',
+                    backgroundColor: 'white',
+                  }}
+                />
+              </Form.Item>
+              <Form.Item>
+                {!isMobile ?? providedTokenSymbol.toUpperCase()}
+              </Form.Item>
+              <Form.Item
+                style={
+                  isMobile
+                    ? {
+                        margin: '16px auto',
+                      }
+                    : {}
+                }
+              >
+                <Button type="primary" shape="round" htmlType="submit">
+                  寄付する
+                </Button>
+              </Form.Item>
+            </Form>
+          </Grid>
+          <Note>
+            ブロックタイムによって時間計測に多少の誤差が生じることがありますので、終盤はラグ等考慮し少し早めのトランザクション送信をお願いします。
+          </Note>
+        </>
       )}
 
       {isEnding && !isClaimed && (
