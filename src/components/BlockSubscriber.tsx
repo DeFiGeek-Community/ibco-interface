@@ -48,7 +48,7 @@ export default function BlockSubscriber(): null {
   const dispatch = useDispatch<AppDispatch>();
   const pendingTxs = usePendingTxs();
 
-  const doingTxHashes: string[] = []; // for exclusive control
+  const [doingTxHashes, setDoingTxHashes] = useState<string[]>([]); // for exclusive control
   const [doneTxHashes, setDoneTxHashes] = useState<string[]>([]); // for cleanup after work
   const [blockNumber, setBlockNumber] = useState<{
     chainId: number | undefined;
@@ -77,21 +77,18 @@ export default function BlockSubscriber(): null {
   );
 
   useEffect(() => {
+    if (!library) {
+      return undefined;
+    }
     if (pendingTxs.length === 0) {
-      library && library.off('block', blockNumberCallback);
+      library.off('block', blockNumberCallback);
       return undefined;
     }
 
-    // Assert just 1 to avoid to duplicate subscriber.
-    if (pendingTxs.length === 1) {
-      if (!library) {
-        return undefined;
-      }
-      if (library.listenerCount('block') === 0) {
-        library.on('block', blockNumberCallback);
-      }
+    if (library.listenerCount('block') === 0) {
+      library.on('block', blockNumberCallback);
     }
-  }, [pendingTxs, blockNumberCallback, library, dispatch]);
+  }, [pendingTxs]); // note: watch only pendingTxs changes.
 
   useEffect(() => {
     if (
@@ -111,16 +108,15 @@ export default function BlockSubscriber(): null {
           // exclusive control
           if (doingTxHashes.some((doingTxHash) => doingTxHash === tx.hash))
             return;
-          doingTxHashes.push(tx.hash);
+          setDoingTxHashes((state) => state.concat(tx.hash));
 
           library
             .getTransactionReceipt(tx.hash)
             .then((receipt) => {
               // exclusive control
-              const idx = doingTxHashes.findIndex(
-                (doingTxHash) => doingTxHash === tx.hash
+              setDoingTxHashes((state) =>
+                state.filter((hash) => hash !== tx.hash)
               );
-              doingTxHashes.splice(idx, 1);
 
               if (receipt) {
                 setDoneTxHashes((state) => state.concat(tx.hash));
@@ -139,7 +135,7 @@ export default function BlockSubscriber(): null {
             });
         });
     }
-  });
+  }, [blockNumber]); // note: watch only blocknumber.
 
   return null;
 }
