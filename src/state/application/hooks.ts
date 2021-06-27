@@ -8,6 +8,7 @@ import {
   endTx,
   PopupContent,
   removePopup,
+  setHash,
   setOpenModal,
   startTx,
 } from './actions';
@@ -104,7 +105,17 @@ export function useActivePopups(): AppState['application']['popupList'] {
   return useMemo(() => list.filter((item) => item.show), [list]);
 }
 
-export function usePendingTx(): number {
+export function usePendingTxs(): {
+  hash: string;
+  type: 'donate' | 'claim';
+}[] {
+  const pendingTxs = useSelector(
+    (state: AppState) => state.application.pendingTxs
+  );
+  return pendingTxs;
+}
+
+export function usePendingTxCount(): number {
   const txCount = useSelector((state: AppState) => state.application.txCount);
   return txCount;
 }
@@ -114,7 +125,16 @@ export function useStartTx(): () => void {
   return useCallback(() => dispatch(startTx()), [dispatch]);
 }
 
-export function useEndTx(): () => void {
+export function useSetHash(): (hash: string, type: 'donate' | 'claim') => void {
   const dispatch = useDispatch<AppDispatch>();
-  return useCallback(() => dispatch(endTx()), [dispatch]);
+  return useCallback(
+    (hash: string, type: 'donate' | 'claim') =>
+      dispatch(setHash({ hash, type })),
+    [dispatch]
+  );
+}
+
+export function useEndTx(): (hash?: string) => void {
+  const dispatch = useDispatch<AppDispatch>();
+  return useCallback((hash?: string) => dispatch(endTx({ hash })), [dispatch]);
 }

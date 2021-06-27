@@ -8,6 +8,7 @@ import {
   setOpenModal,
   startTx,
   endTx,
+  setHash,
 } from './actions';
 
 type PopupList = Array<{
@@ -21,6 +22,7 @@ export interface ApplicationState {
   readonly blockNumber: { readonly [chainId: number]: number };
   readonly popupList: PopupList;
   readonly openModal: ApplicationModal | null;
+  readonly pendingTxs: Array<{ hash: string; type: 'donate' | 'claim' }>;
   readonly txCount: number;
 }
 
@@ -28,6 +30,7 @@ const initialState: ApplicationState = {
   blockNumber: {},
   popupList: [],
   openModal: null,
+  pendingTxs: [],
   txCount: 0,
 };
 
@@ -73,7 +76,18 @@ export default createReducer(initialState, (builder) =>
     .addCase(startTx, (state) => {
       state.txCount++;
     })
-    .addCase(endTx, (state) => {
+    .addCase(setHash, (state, { payload: { hash, type } }) => {
+      state.pendingTxs.push({ hash, type });
+    })
+    .addCase(endTx, (state, { payload: { hash } }) => {
       state.txCount--;
+      if (hash) {
+        const idx = state.pendingTxs.findIndex(
+          (pendingHash) => pendingHash.hash === hash
+        );
+        if (idx > -1) {
+          state.pendingTxs.splice(idx, idx + 1);
+        }
+      }
     })
 );

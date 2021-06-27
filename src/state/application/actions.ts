@@ -45,4 +45,7 @@ export const removePopup = createAction<{ key: string }>(
 );
 
 export const startTx = createAction('application/startTx');
-export const endTx = createAction('application/endTx');
+export const setHash = createAction<{ hash: string; type: 'donate' | 'claim' }>(
+  'application/setHash'
+);
+export const endTx = createAction<{ hash?: string }>('application/endTx');

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import BlockSubscriber from './components/BlockSubscriber';
 import Web3ReactManager from './components/Web3ReactManager';
 import EventEditorCreate from './pages/event-editor/create';
 import EventDetail from './pages/event/id';
@@ -14,6 +15,7 @@ function App() {
         </Route>
         <Route exact path="/event/:id">
           <EventDetail />
+          <BlockSubscriber />
         </Route>
         <Route exact path="/event-editor/create">
           <EventEditorCreate />
