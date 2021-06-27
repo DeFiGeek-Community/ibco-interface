@@ -82,12 +82,9 @@ export default createReducer(initialState, (builder) =>
     .addCase(endTx, (state, { payload: { hash } }) => {
       state.txCount--;
       if (hash) {
-        const idx = state.pendingTxs.findIndex(
-          (pendingHash) => pendingHash.hash === hash
+        state.pendingTxs = state.pendingTxs.filter(
+          (pendingTx) => pendingTx.hash !== hash
         );
-        if (idx > -1) {
-          state.pendingTxs.splice(idx, idx + 1);
-        }
       }
     })
 );

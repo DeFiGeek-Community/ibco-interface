@@ -131,7 +131,7 @@ describe('application reducer', () => {
   describe('endTx', () => {
     it('minus 1', () => {
       expect(store.getState().txCount).toBe(0);
-      store.dispatch(endTx());
+      store.dispatch(endTx({}));
       expect(store.getState().txCount).toBe(-1);
     });
   });

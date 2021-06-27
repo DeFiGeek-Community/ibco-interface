@@ -179,6 +179,7 @@ export default function InputForm({
     myTotalProvided,
     contract,
     startTx,
+    setHash,
     endTx,
   ]);
 
