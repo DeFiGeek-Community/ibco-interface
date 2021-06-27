@@ -25,7 +25,6 @@ function getContent(
             >
               {tx.hash}
             </ExternalLink>
-            <p>寄付額への反映は数confirmation後になります。</p>
           </>
         ),
       }
@@ -49,7 +48,6 @@ export default function BlockSubscriber(): null {
   const pendingTxs = usePendingTxs();
 
   const [doingTxHashes, setDoingTxHashes] = useState<string[]>([]); // for exclusive control
-  const [doneTxHashes, setDoneTxHashes] = useState<string[]>([]); // for cleanup after work
   const [blockNumber, setBlockNumber] = useState<{
     chainId: number | undefined;
     blockNumber: number | null;
@@ -98,43 +96,39 @@ export default function BlockSubscriber(): null {
       blockNumber.chainId !== chainId
     ) {
       return undefined;
-    } else {
-      // check receipt
-      pendingTxs
-        .filter(
-          (tx) => !doneTxHashes.some((doneTxHash) => doneTxHash === tx.hash)
-        )
-        .forEach((tx) => {
-          // exclusive control
-          if (doingTxHashes.some((doingTxHash) => doingTxHash === tx.hash))
-            return;
-          setDoingTxHashes((state) => state.concat(tx.hash));
-
-          library
-            .getTransactionReceipt(tx.hash)
-            .then((receipt) => {
-              // exclusive control
-              setDoingTxHashes((state) =>
-                state.filter((hash) => hash !== tx.hash)
-              );
-
-              if (receipt) {
-                setDoneTxHashes((state) => state.concat(tx.hash));
-                dispatch(endTx({ hash: tx.hash }));
-
-                const popupContent = getContent(tx, chainId);
-
-                notification.success({
-                  ...popupContent,
-                  duration: 0,
-                });
-              }
-            })
-            .catch((error) => {
-              console.error(`failed to check transaction hash: ${tx}`, error);
-            });
-        });
     }
+
+    // check receipt
+    pendingTxs
+      .filter(
+        (tx) => !doingTxHashes.some((doingTxHash) => doingTxHash === tx.hash)
+      )
+      .forEach((tx) => {
+        // exclusive control
+        setDoingTxHashes((state) => state.concat(tx.hash));
+
+        library
+          .getTransactionReceipt(tx.hash)
+          .then((receipt) => {
+            // exclusive control
+            setDoingTxHashes((state) =>
+              state.filter((hash) => hash !== tx.hash)
+            );
+
+            if (receipt) {
+              dispatch(endTx({ hash: tx.hash }));
+
+              const popupContent = getContent(tx, chainId);
+              notification.success({
+                ...popupContent,
+                duration: 0,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error(`failed to check transaction hash: ${tx}`, error);
+          });
+      });
   }, [blockNumber]); // note: watch only blocknumber.
 
   return null;
