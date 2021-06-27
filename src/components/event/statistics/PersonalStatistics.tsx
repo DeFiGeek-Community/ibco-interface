@@ -21,6 +21,7 @@ type Props = {
   distributedTokenSymbol: CryptoCurrency;
   providedTokenSymbol: CryptoCurrency;
   isEnding: boolean;
+  isClaimed: boolean;
 };
 
 const PersonalStatistics = ({
@@ -31,6 +32,7 @@ const PersonalStatistics = ({
   distributedTokenSymbol,
   providedTokenSymbol,
   isEnding,
+  isClaimed,
 }: Props) => {
   const { active } = useWeb3React();
   // FIXME: replace mock
@@ -79,14 +81,18 @@ const PersonalStatistics = ({
       {!isLoading ? (
         <>
           <p>
-            獲得予定数:{' '}
+            {!isClaimed ? '獲得予定数' : '獲得数'}:{' '}
             <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
               {active ? expectedAmount.value : '????'}{' '}
               {distributedTokenSymbol.toUpperCase()}
             </span>
             {expectedAmount.isZeroByRound && (
               <div
-                style={{ fontSize: '1rem', color: 'gray', marginLeft: '10px' }}
+                style={{
+                  fontSize: '1rem',
+                  color: 'gray',
+                  marginLeft: '10px',
+                }}
               >
                 少なすぎて0になっています
               </div>
@@ -122,24 +128,26 @@ const PersonalStatistics = ({
               )}
             </p>
           ) : (
-            <p>
-              寄付
-              <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                {active ? fixedProvidedAmount.value : '????'}{' '}
-                {providedTokenSymbol.toUpperCase()}
-              </span>
-              {fixedProvidedAmount.isZeroByRound && (
-                <div
-                  style={{
-                    fontSize: '1rem',
-                    color: 'gray',
-                    marginLeft: '10px',
-                  }}
-                >
-                  少なすぎて0になっています
-                </div>
-              )}
-            </p>
+            !isClaimed && (
+              <p>
+                寄付
+                <span style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                  {active ? fixedProvidedAmount.value : '????'}{' '}
+                  {providedTokenSymbol.toUpperCase()}
+                </span>
+                {fixedProvidedAmount.isZeroByRound && (
+                  <div
+                    style={{
+                      fontSize: '1rem',
+                      color: 'gray',
+                      marginLeft: '10px',
+                    }}
+                  >
+                    少なすぎて0になっています
+                  </div>
+                )}
+              </p>
+            )
           )}
         </>
       ) : (
