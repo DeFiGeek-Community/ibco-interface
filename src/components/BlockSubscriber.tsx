@@ -21,7 +21,7 @@ function getContent(
         description: (
           <>
             <ExternalLink
-              href={getEtherscanLink(chainId!, tx.hash, 'transaction')}
+              href={getEtherscanLink(chainId, tx.hash, 'transaction')}
             >
               {tx.hash}
             </ExternalLink>
