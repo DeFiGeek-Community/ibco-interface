@@ -178,8 +178,6 @@ export default function InputForm({
     let hash = '';
     try {
       const stored = myTotalProvided;
-      setIsClaimed(true);
-
       startTx();
 
       const signer = contract.connect(library.getSigner());
@@ -189,6 +187,7 @@ export default function InputForm({
 
       // update personal statics
       setMyTotalProvided(stored);
+      setIsClaimed(true);
     } catch (error) {
       console.error('claim error!', error);
       setIsClaimed(false);
