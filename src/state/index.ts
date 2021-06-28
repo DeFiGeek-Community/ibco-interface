@@ -5,7 +5,7 @@ import application from './application/reducer';
 import { updateVersion } from './global/actions';
 import multicall from './multicall/reducer';
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions'];
+const PERSISTED_KEYS: string[] = ['application', 'multicall'];
 
 const store = configureStore({
   reducer: {

@@ -54,6 +54,8 @@ type Props = {
   myTotalProvided: number;
   providedTokenSymbol: string;
   setCopiedInputNumber: (value: number) => void;
+  setMyTotalProvided: (value: number) => void;
+  setIsClaimed: (value: boolean) => void;
   isClaimed: boolean;
 };
 
@@ -63,6 +65,8 @@ export default function InputForm({
   myTotalProvided,
   providedTokenSymbol,
   setCopiedInputNumber,
+  setMyTotalProvided,
+  setIsClaimed,
   isClaimed,
 }: Props) {
   const { library, account, active, chainId } = useActiveWeb3React();
@@ -159,12 +163,17 @@ export default function InputForm({
 
     let hash = '';
     try {
+      const stored = myTotalProvided;
       startTx();
 
       const signer = contract.connect(library.getSigner());
       const res = await signer.claim();
       hash = res.hash;
       setHash(hash, 'claim');
+
+      // update personal statics
+      setMyTotalProvided(stored);
+      setIsClaimed(true);
     } catch (error) {
       console.error('claim error!', error);
       endTx(hash);
@@ -183,6 +192,8 @@ export default function InputForm({
     startTx,
     setHash,
     endTx,
+    setMyTotalProvided,
+    setIsClaimed,
   ]);
 
   const copyInputValue = useCallback(
