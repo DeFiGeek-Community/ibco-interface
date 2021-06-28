@@ -91,6 +91,7 @@ export default function BulksaleV1(props: Props) {
         library.getLogs({ ...filter, fromBlock: 8792758 }).then((log) => {
           if (log.length > 0) {
             setIsClaimed(true);
+            // get `usershare` in Claimed Event
             const iface = new Interface(TXJPIBCO.abi);
             const event = iface.parseLog(log[0]);
             setMyTotalProvided(Number(formatEther(event.args[1])));
@@ -150,6 +151,8 @@ export default function BulksaleV1(props: Props) {
         myTotalProvided={myTotalProvided}
         providedTokenSymbol={props.data.eventSummary.providedTokenSymbol}
         setCopiedInputNumber={setCopiedInputNumber}
+        setMyTotalProvided={setMyTotalProvided}
+        setIsClaimed={setIsClaimed}
         isClaimed={isClaimed}
       ></InputForm>
 
