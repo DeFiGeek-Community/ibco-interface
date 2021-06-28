@@ -88,10 +88,15 @@ export default function InputForm({
         message.error(`ネットワークを${targetedChain}に接続してください。`);
         return;
       }
+      if (form.getFieldsError()[0].errors.length > 0) {
+        message.error(`正しい数量を入力してください。`);
+        return;
+      }
 
       let hash = '';
       try {
         startTx();
+
         const signer = library.getSigner();
         const res = await signer.sendTransaction({
           to: contract.address,
@@ -106,7 +111,13 @@ export default function InputForm({
       } catch (error) {
         console.error('donation failed!', error);
         endTx(hash);
+
+        // Notificate to user.
         if (error.message) {
+          if ((error.message as string).search('MetaMask Tx Signature') > -1) {
+            // do nothing
+            return;
+          }
           if (
             (error.message as string).search('The offering has not started') >
             -1
@@ -126,7 +137,6 @@ export default function InputForm({
             return;
           }
         }
-
         notification.error({
           message: 'エラーが発生しました。。',
           description: error.messages,
@@ -160,10 +170,16 @@ export default function InputForm({
       message.info(`あなた（${account}）の寄付額は0です。`, 5);
       return;
     }
+    if (isClaimed) {
+      message.info(`すでに請求済みです。`, 5);
+      return;
+    }
 
     let hash = '';
     try {
       const stored = myTotalProvided;
+      setIsClaimed(true);
+
       startTx();
 
       const signer = contract.connect(library.getSigner());
@@ -173,21 +189,30 @@ export default function InputForm({
 
       // update personal statics
       setMyTotalProvided(stored);
-      setIsClaimed(true);
     } catch (error) {
       console.error('claim error!', error);
+      setIsClaimed(false);
       endTx(hash);
+
+      // Notificate to user.
+      if (error.message) {
+        if ((error.message as string).search('MetaMask Tx Signature') > -1) {
+          // do nothing
+          return;
+        }
+      }
       notification.error({
         message: 'エラーが発生しました。。',
         description: error.messages,
       });
     }
   }, [
+    myTotalProvided,
+    isClaimed,
     active,
     account,
     library,
     chainId,
-    myTotalProvided,
     contract,
     startTx,
     setHash,
