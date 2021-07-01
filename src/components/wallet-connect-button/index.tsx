@@ -7,12 +7,12 @@ import { Activity } from 'react-feather';
 import styled, { css } from 'styled-components';
 // import CoinbaseWalletIcon from '../../../assets/images/coinbaseWalletIcon.svg';
 // import FortmaticIcon from '../../../assets/images/fortmaticIcon.png';
-// import WalletConnectIcon from '../../../assets/images/walletConnectIcon.svg';
+import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg';
 import {
   // fortmatic,
   injected,
   // portis,
-  // walletconnect,
+  walletconnect,
   // walletlink,
 } from '../../connectors';
 import { NETWORK_LABELS } from '../../constants/chains';
@@ -129,12 +129,12 @@ const NetworkIcon = styled(Activity)`
 function StatusIcon({ connector }: { connector: AbstractConnector }) {
   if (connector === injected) {
     return <Identicon />;
-    // } else if (connector === walletconnect) {
-    //   return (
-    //     <IconWrapper size={16}>
-    //       <img src={WalletConnectIcon} alt={''} />
-    //     </IconWrapper>
-    //   );
+  } else if (connector === walletconnect) {
+    return (
+      <IconWrapper size={16}>
+        <img src={WalletConnectIcon} alt={''} />
+      </IconWrapper>
+    );
     // } else if (connector === walletlink) {
     //   return (
     //     <IconWrapper size={16}>

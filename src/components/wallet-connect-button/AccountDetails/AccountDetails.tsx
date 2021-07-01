@@ -3,10 +3,11 @@ import { useContext } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import styled, { ThemeContext } from 'styled-components';
+import WalletConnectIcon from '../../../assets/images/walletConnectIcon.svg';
 import { ReactComponent as Close } from '../../../assets/images/x.svg';
 import {
   injected,
-  // walletconnect,
+  walletconnect,
   // walletlink,
   // fortmatic,
   // portis,
@@ -20,7 +21,6 @@ import { ExternalLink } from '../../ExternalLink';
 // import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg';
 // import FortmaticIcon from '../../assets/images/fortmaticIcon.png';
 // import PortisIcon from '../../assets/images/portisIcon.png';
-// import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg';
 import Identicon from '../Identicon';
 import Copy from './Copy';
 
@@ -227,12 +227,12 @@ export default function AccountDetails({
           <Identicon />
         </IconWrapper>
       );
-      // } else if (connector === walletconnect) {
-      //   return (
-      //     <IconWrapper size={16}>
-      //       <img src={WalletConnectIcon} alt={'wallet connect logo'} />
-      //     </IconWrapper>
-      //   );
+    } else if (connector === walletconnect) {
+      return (
+        <IconWrapper size={16}>
+          <img src={WalletConnectIcon} alt={'wallet connect logo'} />
+        </IconWrapper>
+      );
       // } else if (connector === walletlink) {
       //   return (
       //     <IconWrapper size={16}>
