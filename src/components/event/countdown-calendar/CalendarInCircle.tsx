@@ -27,6 +27,19 @@ const InnerPosition = styled.span`
   }
 `;
 
+const BeforeStartStatement = styled.span`
+  display: inline-block;
+  position: absolute;
+  font-size: 1.8rem;
+  font-weight: bold;
+  top: 40%;
+  left: 50px;
+
+  @media (max-width: 600px) {
+    left: 10px;
+  }
+`;
+
 type Props = {
   unixStartDate: number;
   unixEndDate: number;
@@ -52,18 +65,9 @@ export default function CalendarInCircle({
       />
 
       {unixStartDate * 1000 > Date.now() ? (
-        <span
-          style={{
-            display: 'inline-block',
-            position: 'absolute',
-            fontSize: '1.8rem',
-            fontWeight: 'bold',
-            top: 260,
-            left: 50,
-          }}
-        >
+        <BeforeStartStatement>
           {format(unixStartDate * 1000, 'yyyy年MM月dd日HH時mm分より開始！')}
-        </span>
+        </BeforeStartStatement>
       ) : (
         <InnerPosition>
           <CountdownCalendar unixEndDate={unixEndDate}></CountdownCalendar>
