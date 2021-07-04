@@ -135,7 +135,7 @@ export default function StatisticsInCircle({
                     ).value
                   : '????'}
               </span>
-              {isStarting && !!interimGoalAmount ? (
+              {!!interimGoalAmount ? (
                 <div
                   style={{
                     textAlign: 'center',
