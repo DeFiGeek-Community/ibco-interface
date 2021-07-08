@@ -20,7 +20,7 @@ export const NETWORK_LABELS: {
   [SupportedChainId.ARBITRUM_ONE]: 'Arbitrum One',
 };
 
-export const targetedChain = process.env.REACT_APP_CHAIN ?? 'rinkeby';
+export const targetedChain = process.env.REACT_APP_CHAIN ?? 'mainnet';
 export const targetedChainId = (SupportedChainId[
   targetedChain.toUpperCase() as any
 ] as unknown) as number;
