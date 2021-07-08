@@ -2,6 +2,7 @@ import { WebSocketProvider } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 // import { PortisConnector } from '@web3-react/portis-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { NETWORK_LABELS, targetedChain } from '../constants/chains';
 // import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 
 // import { FortmaticConnector } from './Fortmatic';
@@ -13,9 +14,10 @@ const NETWORK_URL = process.env.REACT_APP_NETWORK_URL;
 // const PORTIS_ID = process.env.REACT_APP_PORTIS_ID;
 const WALLETCONNECT_BRIDGE_URL = process.env.REACT_APP_WALLETCONNECT_BRIDGE_URL;
 
-export const NETWORK_CHAIN_ID: number = parseInt(
-  process.env.REACT_APP_CHAIN_ID ?? '1'
+const chain = Object.entries(NETWORK_LABELS).find(
+  (item) => item[1].toLowerCase() === targetedChain.toLowerCase()
 );
+export const NETWORK_CHAIN_ID: number = chain ? parseInt(chain[0]) : 1;
 
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(

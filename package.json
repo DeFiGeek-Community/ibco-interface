@@ -1,6 +1,7 @@
 {
-  "name": "fundraiser-ui",
+  "name": "ibco-interface",
   "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "scripts": {
     "start": "yarn compile-external-abi-types && REACT_APP_CHAIN=rinkeby react-scripts start",
