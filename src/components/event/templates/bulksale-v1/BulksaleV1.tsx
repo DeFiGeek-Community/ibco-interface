@@ -42,11 +42,17 @@ export default function BulksaleV1(props: Props) {
   // get Total Provided and Personal Donation.
   useInterval(() => {
     try {
-      if (!active || targetedChainId !== chainId) {
-        enableSubgraph && getStateFromSubgraph();
+      // Run regardless of whether logged in to wallet.
+      if (!account) {
+        if (enableSubgraph) {
+          getStateFromSubgraph();
+        } else {
+          active && targetedChainId === chainId && getTotalProvided();
+        }
         return;
       }
-      getStatesFromContract();
+      // Only when logged in to wallet.
+      getPersonalStates();
     } catch (error) {
       console.error(error);
     }
@@ -74,11 +80,15 @@ export default function BulksaleV1(props: Props) {
       });
   }, 30000);
 
-  function getStatesFromContract() {
-    if (active && contract && account && library) {
+  function getTotalProvided() {
+    contract &&
       contract.totalProvided().then((state) => {
         setTotalProvided(Number(formatEther(state)));
       });
+  }
+
+  function getPersonalStates() {
+    if (active && account && contract && library) {
       if (!isClaimed) {
         contract.provided(account).then((state) => {
           setMyTotalProvided(Number(formatEther(state)));
