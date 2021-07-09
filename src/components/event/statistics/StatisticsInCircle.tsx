@@ -1,9 +1,8 @@
 import { StarTwoTone } from '@ant-design/icons';
 import { useWeb3React } from '@web3-react/core';
-import { Skeleton } from 'antd';
 import { Circle } from 'rc-progress';
 import styled from 'styled-components';
-import { targetedChainId } from '../../../constants/chains';
+import { targetedChain, targetedChainId } from '../../../constants/chains';
 import { getEtherscanLink } from '../../../utils/externalLink';
 import {
   CryptoCurrency,
@@ -68,9 +67,8 @@ export default function StatisticsInCircle({
   contractAddress,
   isStarting,
 }: Props) {
-  const { chainId } = useWeb3React();
-  // FIXME: replace mock
-  const isLoading = false;
+  const { active, chainId } = useWeb3React();
+  const isDifferentialNetwork = !(active && targetedChainId === chainId);
 
   function getTargetPercetage() {
     if (finalGoalAmount <= 0) {
@@ -108,50 +106,52 @@ export default function StatisticsInCircle({
           >
             Total Provided
           </h3>
-          {!isLoading ? (
-            <>
-              <div
+          <div
+            style={{
+              fontSize: '3rem',
+              lineHeight: '3.5rem',
+            }}
+          >
+            {isStarting && !isDifferentialNetwork
+              ? formatPrice(totalProvided, providedTokenSymbol).value
+              : '????'}{' '}
+            {providedTokenSymbol.toUpperCase()}
+          </div>
+          <span
+            style={{
+              fontSize: '2rem',
+            }}
+          >
+            ¥
+            {isStarting && !isDifferentialNetwork
+              ? '' +
+                formatPrice(getFiatConversionAmount(totalProvided), fiatSymbol)
+                  .value
+              : '????'}
+          </span>
+          <div
+            style={{
+              textAlign: 'center',
+              fontSize: '1rem',
+              marginTop: '10px',
+            }}
+          >
+            {!!interimGoalAmount && !isDifferentialNetwork ? (
+              <>
+                目標 {interimGoalAmount}
+                {providedTokenSymbol.toUpperCase()} {' 以上'}
+                {totalProvided >= interimGoalAmount ? 'を達成しました🎉' : ''}
+              </>
+            ) : (
+              <p
                 style={{
-                  fontSize: '3rem',
-                  lineHeight: '3.5rem',
+                  color: 'black',
                 }}
               >
-                {isStarting
-                  ? formatPrice(totalProvided, providedTokenSymbol).value
-                  : '????'}{' '}
-                {providedTokenSymbol.toUpperCase()}
-              </div>
-              <span
-                style={{
-                  fontSize: '2rem',
-                }}
-              >
-                ¥
-                {isStarting
-                  ? '' +
-                    formatPrice(
-                      getFiatConversionAmount(totalProvided),
-                      fiatSymbol
-                    ).value
-                  : '????'}
-              </span>
-              {!!interimGoalAmount ? (
-                <div
-                  style={{
-                    textAlign: 'center',
-                    fontSize: '1rem',
-                    marginTop: '10px',
-                  }}
-                >
-                  目標 {interimGoalAmount}
-                  {providedTokenSymbol.toUpperCase()} {' 以上'}
-                  {totalProvided >= interimGoalAmount ? 'を達成しました🎉' : ''}
-                </div>
-              ) : null}
-            </>
-          ) : (
-            <Skeleton active paragraph={{ rows: 2 }}></Skeleton>
-          )}
+                {targetedChain}に接続してください。
+              </p>
+            )}
+          </div>
         </InnerPosition>
       </ExternalLink>
     </LeftCirclePosition>
