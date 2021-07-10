@@ -1,8 +1,8 @@
 import { StarTwoTone } from '@ant-design/icons';
-import { useWeb3React } from '@web3-react/core';
 import { Circle } from 'rc-progress';
 import styled from 'styled-components';
 import { targetedChain, targetedChainId } from '../../../constants/chains';
+import { useActiveWeb3React } from '../../../hooks/useWeb3';
 import { getEtherscanLink } from '../../../utils/externalLink';
 import {
   CryptoCurrency,
@@ -67,8 +67,8 @@ export default function StatisticsInCircle({
   contractAddress,
   isStarting,
 }: Props) {
-  const { active, chainId } = useWeb3React();
-  const isDifferentialNetwork = !(active && targetedChainId === chainId);
+  const { chainId } = useActiveWeb3React();
+  const isDifferentialNetwork = !(targetedChainId === chainId);
 
   function getTargetPercetage() {
     if (finalGoalAmount <= 0) {
