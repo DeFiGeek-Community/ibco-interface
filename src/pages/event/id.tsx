@@ -82,10 +82,7 @@ export default function EventDetail() {
 
   return (
     <Container>
-      <Helmet>
-        <title>{masterDataForFirstEvent.title}</title>
-        <link rel="icon" href={masterDataForFirstEvent.logoUrl} />
-      </Helmet>
+      <Helmet title={masterDataForFirstEvent.title} />
 
       <div style={{ textAlign: 'right', width: '100%', padding: '16px 16px' }}>
         <Web3Status />
