@@ -8,11 +8,7 @@ import { mockData } from './event/id';
 export default function Index() {
   return (
     <Container>
-      <Helmet>
-        <title>The tool to build easily a Bulk Auction</title>
-        {/* ロゴができたら差し替える */}
-        <link rel="icon" href="/favicon.ico" />
-      </Helmet>
+      <Helmet title="The tool to build easily a Bulk Auction" />
 
       <Main>
         <H1>The tool to build easily a Bulk Auction</H1>

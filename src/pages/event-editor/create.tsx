@@ -153,10 +153,7 @@ export default function EventEditorCreate() {
 
   return (
     <Container>
-      <Helmet>
-        <title>イベント編集</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Helmet>
+      <Helmet title="イベント編集" />
 
       <div
         style={{ textAlign: 'right', width: '100%', padding: '24px 24px 0' }}
