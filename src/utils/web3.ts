@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address';
+import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { BulksaleV1Args, templateNames } from '../constants/contracts';
 
@@ -63,4 +64,17 @@ export function getAbiArgs(templateName: string, args: BulksaleV1Args) {
 
   const codec = new ethers.utils.AbiCoder();
   return codec.encode(types, values);
+}
+
+export function getLibrary(provider: any): Web3Provider {
+  const library = new Web3Provider(
+    provider,
+    typeof provider.chainId === 'number'
+      ? provider.chainId
+      : typeof provider.chainId === 'string'
+      ? parseInt(provider.chainId)
+      : 'any'
+  );
+  library.pollingInterval = 15_000;
+  return library;
 }

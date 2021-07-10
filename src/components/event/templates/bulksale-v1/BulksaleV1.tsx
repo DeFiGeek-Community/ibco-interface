@@ -43,14 +43,7 @@ export default function BulksaleV1(props: Props) {
   useInterval(() => {
     try {
       // Run regardless of whether logged in to wallet.
-      if (!account) {
-        if (enableSubgraph) {
-          getStateFromSubgraph();
-        } else {
-          active && targetedChainId === chainId && getTotalProvided();
-        }
-        return;
-      }
+      enableSubgraph ? getStateFromSubgraph() : getTotalProvided();
       // Only when logged in to wallet.
       getPersonalStates();
     } catch (error) {
@@ -81,33 +74,43 @@ export default function BulksaleV1(props: Props) {
   }, 30000);
 
   function getTotalProvided() {
-    contract &&
-      contract.totalProvided().then((state) => {
-        setTotalProvided(Number(formatEther(state)));
-      });
+    if (targetedChainId !== chainId || !contract) {
+      return;
+    }
+    contract.totalProvided().then((state) => {
+      setTotalProvided(Number(formatEther(state)));
+    });
   }
 
   function getPersonalStates() {
-    if (active && account && contract && library) {
-      if (!isClaimed) {
-        contract.provided(account).then((state) => {
-          setMyTotalProvided(Number(formatEther(state)));
-        });
-      }
+    if (
+      !active ||
+      !account ||
+      !contract ||
+      !library ||
+      targetedChainId !== chainId
+    ) {
+      return;
+    }
 
-      // Check if claimed
-      if (isEnding && !isClaimed) {
-        const filter = contract.filters.Claimed(account);
-        library.getLogs({ ...filter, fromBlock: 8792758 }).then((log) => {
-          if (log.length > 0) {
-            setIsClaimed(true);
-            // get `usershare` in Claimed Event
-            const iface = new Interface(TXJPIBCO.abi);
-            const event = iface.parseLog(log[0]);
-            setMyTotalProvided(Number(formatEther(event.args[1])));
-          }
-        });
-      }
+    if (!isClaimed) {
+      contract.provided(account).then((state) => {
+        setMyTotalProvided(Number(formatEther(state)));
+      });
+    }
+
+    // Check if claimed
+    if (isEnding && !isClaimed) {
+      const filter = contract.filters.Claimed(account);
+      library.getLogs({ ...filter, fromBlock: 8792758 }).then((log) => {
+        if (log.length > 0) {
+          setIsClaimed(true);
+          // get `usershare` in Claimed Event
+          const iface = new Interface(TXJPIBCO.abi);
+          const event = iface.parseLog(log[0]);
+          setMyTotalProvided(Number(formatEther(event.args[1])));
+        }
+      });
     }
   }
 
