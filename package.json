@@ -9,9 +9,9 @@
     "build:prod": "yarn compile-external-abi-types && REACT_APP_CHAIN=mainnet react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint . --ext .ts,.tsx ./src",
     "lint:fix": "yarn lint --fix && yarn format",
-    "format": "prettier --config .prettierrc.json --write '**/*.tsx'",
+    "format": "prettier --config .prettierrc.json --write 'src/**/*.{js,jsx,ts,tsx}'",
     "diff-check": "git diff --exit-code -- .",
     "ci:format": "yarn format && yarn diff-check",
     "compile-external-abi-types": "typechain --target ethers-v5 --out-dir src/abis/types './src/abis/**/*.json'"
