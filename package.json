@@ -10,10 +10,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .ts,.tsx ./src",
-    "lint:fix": "yarn lint --fix && yarn format",
+    "lint:fix": "yarn lint --fix",
     "format": "prettier --config .prettierrc.json --write 'src/**/*.{js,jsx,ts,tsx}'",
     "diff-check": "git diff --exit-code -- .",
-    "ci:format": "yarn format && yarn diff-check",
+    "ci:format": "yarn lint:fix && yarn format && yarn diff-check",
     "compile-external-abi-types": "typechain --target ethers-v5 --out-dir src/abis/types './src/abis/**/*.json'"
   },
   "dependencies": {
