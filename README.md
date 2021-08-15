@@ -1,6 +1,6 @@
 # IBCO Interface
 
-![](https://github.com/DeFiGeek-Community/fundraiser-ui/workflows/build%20&%20deploy/badge.svg)
+![](https://github.com/DeFiGeek-Community/ibco-interface/workflows/build%20&%20deploy/badge.svg)
 
 A user interface for IBCO(initial bonding curve offering).
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and was helped a lot by [Uniswap Interface](https://github.com/Uniswap/uniswap-interface).

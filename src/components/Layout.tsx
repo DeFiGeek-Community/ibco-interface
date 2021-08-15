@@ -58,7 +58,7 @@ export const Grid = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  // flex-wrap: wrap; comment out to fix https://github.com/DeFiGeek-Community/fundraiser-ui/issues/16
+  // flex-wrap: wrap; comment out to fix https://github.com/DeFiGeek-Community/ibco-interface/issues/16
   max-width: 1200px;
   margin: 1rem 0;
 
